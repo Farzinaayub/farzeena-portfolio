@@ -1,22 +1,37 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Farzeena Portfolio API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: case-studies
+    description: Case study operations
+  - name: blogs
+    description: Blog operations
+  - name: hero
+    description: Hero section operations
+  - name: about
+    description: About section operations
+  - name: site-settings
+    description: Site settings operations
+  - name: contact
+    description: Contact form operations
+  - name: auth
+    description: Auth operations
+  - name: dashboard
+    description: Admin dashboard operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +39,489 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /case-studies:
+    get:
+      operationId: listCaseStudies
+      tags: [case-studies]
+      summary: List all case studies
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, published]
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of case studies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CaseStudy"
+    post:
+      operationId: createCaseStudy
+      tags: [case-studies]
+      summary: Create a case study
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaseStudyInput"
+      responses:
+        "201":
+          description: Created case study
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseStudy"
+
+  /case-studies/{id}:
+    get:
+      operationId: getCaseStudy
+      tags: [case-studies]
+      summary: Get a case study by ID or slug
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Case study
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseStudy"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateCaseStudy
+      tags: [case-studies]
+      summary: Update a case study
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaseStudyInput"
+      responses:
+        "200":
+          description: Updated case study
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseStudy"
+    delete:
+      operationId: deleteCaseStudy
+      tags: [case-studies]
+      summary: Delete a case study
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /blogs:
+    get:
+      operationId: listBlogs
+      tags: [blogs]
+      summary: List all blogs
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, published]
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of blogs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Blog"
+    post:
+      operationId: createBlog
+      tags: [blogs]
+      summary: Create a blog post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlogInput"
+      responses:
+        "201":
+          description: Created blog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Blog"
+
+  /blogs/{id}:
+    get:
+      operationId: getBlog
+      tags: [blogs]
+      summary: Get a blog by ID or slug
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Blog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Blog"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateBlog
+      tags: [blogs]
+      summary: Update a blog post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlogInput"
+      responses:
+        "200":
+          description: Updated blog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Blog"
+    delete:
+      operationId: deleteBlog
+      tags: [blogs]
+      summary: Delete a blog post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /hero:
+    get:
+      operationId: getHeroSection
+      tags: [hero]
+      summary: Get hero section content
+      responses:
+        "200":
+          description: Hero section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeroSection"
+    put:
+      operationId: updateHeroSection
+      tags: [hero]
+      summary: Update hero section content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HeroSectionInput"
+      responses:
+        "200":
+          description: Updated hero section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeroSection"
+
+  /about:
+    get:
+      operationId: getAboutSection
+      tags: [about]
+      summary: Get about section content
+      responses:
+        "200":
+          description: About section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AboutSection"
+    put:
+      operationId: updateAboutSection
+      tags: [about]
+      summary: Update about section content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AboutSectionInput"
+      responses:
+        "200":
+          description: Updated about section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AboutSection"
+
+  /site-settings:
+    get:
+      operationId: getSiteSettings
+      tags: [site-settings]
+      summary: Get site settings
+      responses:
+        "200":
+          description: Site settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+    put:
+      operationId: updateSiteSettings
+      tags: [site-settings]
+      summary: Update site settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteSettingsInput"
+      responses:
+        "200":
+          description: Updated site settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+
+  /contact:
+    post:
+      operationId: submitContact
+      tags: [contact]
+      summary: Submit contact form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactSubmissionInput"
+      responses:
+        "201":
+          description: Submission saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /contact-submissions:
+    get:
+      operationId: listContactSubmissions
+      tags: [contact]
+      summary: List contact form submissions (admin)
+      responses:
+        "200":
+          description: List of submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContactSubmission"
+    delete:
+      operationId: bulkDeleteContactSubmissions
+      tags: [contact]
+      summary: Bulk delete contact submissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+              required: [ids]
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /contact-submissions/{id}:
+    delete:
+      operationId: deleteContactSubmission
+      tags: [contact]
+      summary: Delete a contact submission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+    patch:
+      operationId: updateContactSubmission
+      tags: [contact]
+      summary: Update contact submission (mark read/unread)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                read:
+                  type: boolean
+              required: [read]
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactSubmission"
+
+  /dashboard-stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard stats
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /auth/request-magic-link:
+    post:
+      operationId: requestMagicLink
+      tags: [auth]
+      summary: Request a magic link login email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required: [email]
+      responses:
+        "200":
+          description: Magic link sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "403":
+          description: Email not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/verify-session:
+    get:
+      operationId: verifySession
+      tags: [auth]
+      summary: Verify current session
+      responses:
+        "200":
+          description: Session info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionInfo"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/sign-out:
+    post:
+      operationId: signOut
+      tags: [auth]
+      summary: Sign out
+      responses:
+        "200":
+          description: Signed out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +529,403 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required: [error]
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success]
+
+    SessionInfo:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        email:
+          type: string
+        name:
+          type: string
+      required: [authenticated]
+
+    PipelineStep:
+      type: object
+      properties:
+        label:
+          type: string
+        iconName:
+          type: string
+        order:
+          type: number
+      required: [label, iconName, order]
+
+    ToolIcon:
+      type: object
+      properties:
+        name:
+          type: string
+        iconUrl:
+          type: string
+        order:
+          type: number
+      required: [name, iconUrl, order]
+
+    FocusArea:
+      type: object
+      properties:
+        icon:
+          type: string
+        text:
+          type: string
+        order:
+          type: number
+      required: [icon, text, order]
+
+    IndustryTag:
+      type: object
+      properties:
+        label:
+          type: string
+        order:
+          type: number
+      required: [label, order]
+
+    CaseStudy:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        shortDescription:
+          type: string
+        content:
+          type: string
+        coverImageUrl:
+          type: string
+        tools:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [draft, published]
+        featured:
+          type: boolean
+        sortOrder:
+          type: number
+        documentUrl:
+          type: string
+        metaTitle:
+          type: string
+        metaDescription:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [_id, title, slug, status]
+
+    CaseStudyInput:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        shortDescription:
+          type: string
+        content:
+          type: string
+        coverImageUrl:
+          type: string
+        tools:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [draft, published]
+        featured:
+          type: boolean
+        sortOrder:
+          type: number
+        documentUrl:
+          type: string
+        metaTitle:
+          type: string
+        metaDescription:
+          type: string
+      required: [title]
+
+    Blog:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        shortDescription:
+          type: string
+        content:
+          type: string
+        coverImageUrl:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [draft, published]
+        featured:
+          type: boolean
+        sortOrder:
+          type: number
+        readingTime:
+          type: number
+        metaTitle:
+          type: string
+        metaDescription:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [_id, title, slug, status]
+
+    BlogInput:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        shortDescription:
+          type: string
+        content:
+          type: string
+        coverImageUrl:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [draft, published]
+        featured:
+          type: boolean
+        sortOrder:
+          type: number
+        metaTitle:
+          type: string
+        metaDescription:
+          type: string
+      required: [title]
+
+    HeroSection:
+      type: object
+      properties:
+        heading:
+          type: string
+        subtitle:
+          type: string
+        cta1Text:
+          type: string
+        cta1Link:
+          type: string
+        cta2Text:
+          type: string
+        cta2Link:
+          type: string
+        pipelineSteps:
+          type: array
+          items:
+            $ref: "#/components/schemas/PipelineStep"
+        toolIcons:
+          type: array
+          items:
+            $ref: "#/components/schemas/ToolIcon"
+        updatedAt:
+          type: string
+      required: [heading]
+
+    HeroSectionInput:
+      type: object
+      properties:
+        heading:
+          type: string
+        subtitle:
+          type: string
+        cta1Text:
+          type: string
+        cta1Link:
+          type: string
+        cta2Text:
+          type: string
+        cta2Link:
+          type: string
+        pipelineSteps:
+          type: array
+          items:
+            $ref: "#/components/schemas/PipelineStep"
+        toolIcons:
+          type: array
+          items:
+            $ref: "#/components/schemas/ToolIcon"
+      required: [heading]
+
+    AboutSection:
+      type: object
+      properties:
+        name:
+          type: string
+        bio:
+          type: string
+        profileImageUrl:
+          type: string
+        focusAreas:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusArea"
+        industryTags:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndustryTag"
+        updatedAt:
+          type: string
+      required: [name]
+
+    AboutSectionInput:
+      type: object
+      properties:
+        name:
+          type: string
+        bio:
+          type: string
+        profileImageUrl:
+          type: string
+        focusAreas:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusArea"
+        industryTags:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndustryTag"
+      required: [name]
+
+    SiteSettings:
+      type: object
+      properties:
+        siteTitle:
+          type: string
+        ctaBannerText:
+          type: string
+        footerText:
+          type: string
+        linkedinUrl:
+          type: string
+        githubUrl:
+          type: string
+        twitterUrl:
+          type: string
+        contactEmail:
+          type: string
+        metaTitleTemplate:
+          type: string
+        defaultMetaDescription:
+          type: string
+        updatedAt:
+          type: string
+      required: [siteTitle]
+
+    SiteSettingsInput:
+      type: object
+      properties:
+        siteTitle:
+          type: string
+        ctaBannerText:
+          type: string
+        footerText:
+          type: string
+        linkedinUrl:
+          type: string
+        githubUrl:
+          type: string
+        twitterUrl:
+          type: string
+        contactEmail:
+          type: string
+        metaTitleTemplate:
+          type: string
+        defaultMetaDescription:
+          type: string
+      required: [siteTitle]
+
+    ContactSubmissionInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        projectType:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+      required: [name, email, message]
+
+    ContactSubmission:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        projectType:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+        read:
+          type: boolean
+        createdAt:
+          type: string
+      required: [_id, name, email, message]
+
+    DashboardStats:
+      type: object
+      properties:
+        publishedCaseStudies:
+          type: number
+        publishedBlogs:
+          type: number
+        unreadSubmissions:
+          type: number
+        totalSubmissions:
+          type: number
+      required: [publishedCaseStudies, publishedBlogs, unreadSubmissions, totalSubmissions]

@@ -24,3 +24,11 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[userenv]
+
+[userenv.shared]
+BETTER_AUTH_SECRET = "SRXqW1o35i2JnHvTKiYytrpRZuKAKc86zRcIdKSM6KY="
+
+[nix]
+channel = "stable-25_05"

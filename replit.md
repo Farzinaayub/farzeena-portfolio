@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+pnpm workspace monorepo using TypeScript. Farzeena Analytics Engineer portfolio website with full-stack CMS.
 
 ## Stack
 
@@ -10,87 +10,122 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Node.js version**: 24
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
+- **Frontend**: React + Vite + Wouter routing + TailwindCSS + shadcn/ui + Framer Motion
 - **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+- **Database**: MongoDB + Mongoose (DB name: `farzeena-portfolio`)
+- **Auth**: better-auth with magic link plugin + Resend for email (admin-only, no public signup)
+- **Validation**: Zod (`zod/v4`)
+- **API codegen**: Orval (from OpenAPI spec → React Query hooks + Zod schemas)
+- **Build**: esbuild (CJS bundle for API), Vite (frontend)
 
 ## Structure
 
 ```text
 artifacts-monorepo/
-├── artifacts/              # Deployable applications
-│   └── api-server/         # Express API server
-├── lib/                    # Shared libraries
-│   ├── api-spec/           # OpenAPI spec + Orval codegen config
-│   ├── api-client-react/   # Generated React Query hooks
-│   ├── api-zod/            # Generated Zod schemas from OpenAPI
-│   └── db/                 # Drizzle ORM schema + DB connection
-├── scripts/                # Utility scripts (single workspace package)
-│   └── src/                # Individual .ts scripts, run via `pnpm --filter @workspace/scripts run <script>`
-├── pnpm-workspace.yaml     # pnpm workspace (artifacts/*, lib/*, lib/integrations/*, scripts)
-├── tsconfig.base.json      # Shared TS options (composite, bundler resolution, es2022)
-├── tsconfig.json           # Root TS project references
-└── package.json            # Root package with hoisted devDeps
+├── artifacts/
+│   ├── api-server/              # Express API server (MongoDB + Mongoose)
+│   └── farzeena-portfolio/      # React frontend (public portfolio + admin CMS)
+├── lib/
+│   ├── api-spec/                # OpenAPI spec + Orval codegen config
+│   ├── api-client-react/        # Generated React Query hooks
+│   └── api-zod/                 # Generated Zod schemas from OpenAPI
+├── scripts/
+│   └── src/seed.ts              # Database seed script (admin user + sample content)
+├── pnpm-workspace.yaml
+└── replit.md
 ```
+
+## Features
+
+### Public Portfolio (/)
+- **8-section homepage**: Navbar, Hero (with pipeline animation), Featured Case Studies, Analytics Insights (blogs), CTA Banner, About, Contact Form, Footer
+- **Case Studies**: `/case-studies` (list), `/case-studies/:slug` (detail with markdown rendering)
+- **Blogs**: `/blogs` (list), `/blogs/:slug` (detail with markdown rendering)
+- All content served from MongoDB via React Query hooks
+
+### Admin CMS (/admin/*)
+- **Magic Link Auth**: Enter email → receive magic link via Resend → auto-login. Only pre-seeded admin users can log in (`disableSignUp: true`)
+- **Dashboard**: Overview with counts and quick links
+- **Case Study Manager**: List, create, edit, delete case studies
+- **Blog Manager**: List, create, edit, delete blogs
+- **Hero Editor**: Edit hero heading, subtitle, CTAs, pipeline steps, tool icons
+- **About Editor**: Edit bio, profile image, focus areas, industry tags
+- **Site Settings**: Edit CTA banner text, footer, social links, contact email, SEO defaults
+- **Contact Submissions**: View, mark read/unread, delete incoming contact form messages
+
+## Key Files
+
+### Backend (artifacts/api-server/src/)
+- `app.ts` — Express app, CORS, cookie-parser, better-auth handler, route mounts
+- `lib/auth.ts` — better-auth config with magic link + Resend
+- `lib/mongoose.ts` — MongoDB connection
+- `models/` — Mongoose models: CaseStudy, Blog, HeroSection, AboutSection, SiteSettings, ContactSubmission
+- `routes/` — REST API routes for all entities + custom auth routes
+
+### Frontend (artifacts/farzeena-portfolio/src/)
+- `App.tsx` — Routing with AuthGuard, QueryClient, Toaster setup
+- `pages/public/Home.tsx` — Full homepage with all 8 sections
+- `pages/public/CaseStudies.tsx` — Case study listing page
+- `pages/public/CaseStudyDetail.tsx` — Case study detail with markdown
+- `pages/public/Blogs.tsx` — Blog listing page
+- `pages/public/BlogDetail.tsx` — Blog detail with markdown
+- `pages/admin/Login.tsx` — Magic link login page
+- `pages/admin/Dashboard.tsx` — Admin dashboard
+- `pages/admin/ContentManagers.tsx` — CaseStudiesManager + BlogsManager components
+- `pages/admin/ContentEditor.tsx` — CaseStudyEditor + BlogEditor forms
+- `pages/admin/SectionEditors.tsx` — HeroEditor, AboutEditor, SiteSettingsEditor, ContactSubmissions
+- `components/layout/AdminLayout.tsx` — Admin sidebar layout
+- `components/layout/PublicLayout.tsx` — Public nav + footer layout
+
+## API Endpoints
+
+All endpoints prefixed with `/api`:
+- `GET/PUT /api/hero` — Hero section
+- `GET/PUT /api/about` — About section
+- `GET/PUT /api/site-settings` — Site settings
+- `GET /api/case-studies` — List case studies
+- `GET /api/case-studies/:id` — Get by ID
+- `GET /api/case-studies/slug/:slug` — Get by slug
+- `POST /api/case-studies` — Create
+- `PUT /api/case-studies/:id` — Update
+- `DELETE /api/case-studies/:id` — Delete
+- `GET /api/blogs` — List blogs
+- `GET /api/blogs/:id` — Get by ID
+- `GET /api/blogs/slug/:slug` — Get by slug
+- `POST /api/blogs` — Create
+- `PUT /api/blogs/:id` — Update
+- `DELETE /api/blogs/:id` — Delete
+- `GET /api/contact-submissions` — List submissions
+- `POST /api/contact-submissions` — Submit contact form
+- `PUT /api/contact-submissions/:id` — Update (mark read/unread)
+- `DELETE /api/contact-submissions/:id` — Delete
+- `POST /api/contact-submissions/bulk-delete` — Bulk delete
+- `POST /api/auth/request-magic-link` — Send magic link email
+- `GET /api/auth/verify-session` — Check session
+- `POST /api/auth/sign-out` — Sign out
+- `/api/auth/*` — better-auth handler (magic link verification callbacks)
+
+## Secrets Required
+- `MONGODB_URI` — MongoDB connection string
+- `RESEND_API_KEY` — Resend API key for sending magic link emails
+- `ADMIN_EMAIL` — Admin email address (used during seeding)
+- `BETTER_AUTH_SECRET` — better-auth secret for session signing
+
+## Running Seed Script
+```bash
+pnpm --filter @workspace/scripts run seed
+```
+Creates admin user, 3 case studies, 3 blogs, hero section, about section, and site settings.
 
 ## TypeScript & Composite Projects
 
-Every package extends `tsconfig.base.json` which sets `composite: true`. The root `tsconfig.json` lists all packages as project references. This means:
+Every package extends `tsconfig.base.json` which sets `composite: true`. The root `tsconfig.json` lists all packages as project references.
 
-- **Always typecheck from the root** — run `pnpm run typecheck` (which runs `tsc --build --emitDeclarationOnly`). This builds the full dependency graph so that cross-package imports resolve correctly. Running `tsc` inside a single package will fail if its dependencies haven't been built yet.
-- **`emitDeclarationOnly`** — we only emit `.d.ts` files during typecheck; actual JS bundling is handled by esbuild/tsx/vite...etc, not `tsc`.
-- **Project references** — when package A depends on package B, A's `tsconfig.json` must list B in its `references` array. `tsc --build` uses this to determine build order and skip up-to-date packages.
+- **Always typecheck from root** — `pnpm run typecheck`
+- **`emitDeclarationOnly`** — only `.d.ts` files during typecheck; JS bundling by Vite/esbuild
 
 ## Root Scripts
 
-- `pnpm run build` — runs `typecheck` first, then recursively runs `build` in all packages that define it
-- `pnpm run typecheck` — runs `tsc --build --emitDeclarationOnly` using project references
-
-## Packages
-
-### `artifacts/api-server` (`@workspace/api-server`)
-
-Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` for request and response validation and `@workspace/db` for persistence.
-
-- Entry: `src/index.ts` — reads `PORT`, starts Express
-- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
-- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
-- Depends on: `@workspace/db`, `@workspace/api-zod`
-- `pnpm --filter @workspace/api-server run dev` — run the dev server
-- `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
-- Build bundles an allowlist of deps (express, cors, pg, drizzle-orm, zod, etc.) and externalizes the rest
-
-### `lib/db` (`@workspace/db`)
-
-Database layer using Drizzle ORM with PostgreSQL. Exports a Drizzle client instance and schema models.
-
-- `src/index.ts` — creates a `Pool` + Drizzle instance, exports schema
-- `src/schema/index.ts` — barrel re-export of all models
-- `src/schema/<modelname>.ts` — table definitions with `drizzle-zod` insert schemas (no models definitions exist right now)
-- `drizzle.config.ts` — Drizzle Kit config (requires `DATABASE_URL`, automatically provided by Replit)
-- Exports: `.` (pool, db, schema), `./schema` (schema only)
-
-Production migrations are handled by Replit when publishing. In development, we just use `pnpm --filter @workspace/db run push`, and we fallback to `pnpm --filter @workspace/db run push-force`.
-
-### `lib/api-spec` (`@workspace/api-spec`)
-
-Owns the OpenAPI 3.1 spec (`openapi.yaml`) and the Orval config (`orval.config.ts`). Running codegen produces output into two sibling packages:
-
-1. `lib/api-client-react/src/generated/` — React Query hooks + fetch client
-2. `lib/api-zod/src/generated/` — Zod schemas
-
-Run codegen: `pnpm --filter @workspace/api-spec run codegen`
-
-### `lib/api-zod` (`@workspace/api-zod`)
-
-Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used by `api-server` for response validation.
-
-### `lib/api-client-react` (`@workspace/api-client-react`)
-
-Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
-
-### `scripts` (`@workspace/scripts`)
-
-Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+- `pnpm run build` — runs `typecheck` first, then recursively runs `build` in all packages
+- `pnpm run typecheck` — runs `tsc --build --emitDeclarationOnly`
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate React Query hooks + Zod schemas from OpenAPI spec

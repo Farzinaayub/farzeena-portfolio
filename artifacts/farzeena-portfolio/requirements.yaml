@@ -1,0 +1,23 @@
+packages:
+  "framer-motion": "For page transitions, hero highlight animations, and scroll reveals"
+  "react-markdown": "To render blog and case study content from markdown"
+  "rehype-sanitize": "Security plugin for react-markdown"
+  "date-fns": "For human-readable date formatting in blogs and admin tables"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to merge tailwind classes without style conflicts"
+  "@dnd-kit/core": "For drag-and-drop reordering in admin panel lists"
+  "@dnd-kit/sortable": "Sortable preset for dnd-kit"
+  "@dnd-kit/utilities": "Utilities for dnd-kit"
+
+images:
+  - path: "artifacts/farzeena-portfolio/public/images/avatar-placeholder.png"
+    description: "A professional, minimalist illustrated avatar of a female data analyst / engineer, flat vector style, light blue and navy tones, clean white background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/farzeena-portfolio/public/images/case-study-placeholder.png"
+    description: "Abstract geometric data visualization background, clean lines, glowing nodes, light blue and silver color palette, minimal corporate tech style"
+    aspect_ratio: "16:9"
+
+notes:
+  - Importing generated TanStack hooks directly from @workspace/api-client-react
+  - Using wouter for client-side routing
+  - Admin panel relies on /api/auth/verify-session for protection
