@@ -13,7 +13,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET || "fallback-secret-change-in-prod",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-  database: mongodbAdapter(client, { dbName }),
+  database: mongodbAdapter(client.db(dbName)),
   plugins: [
     emailOTP({
       disableSignUp: true,

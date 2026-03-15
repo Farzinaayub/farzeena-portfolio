@@ -29,10 +29,13 @@ export default function AdminLogin() {
         });
       },
       onError: (err) => {
+        const msg = extractMessage(err);
+        const isUnauthorized = (err as { status?: number })?.status === 403 ||
+          msg.toLowerCase().includes("not authorized") || msg.toLowerCase().includes("unauthorized");
         toast({
           variant: "destructive",
-          title: "Not authorized",
-          description: extractMessage(err),
+          title: isUnauthorized ? "Not authorized" : "Failed to send code",
+          description: msg,
         });
       },
     },
