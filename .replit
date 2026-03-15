@@ -29,7 +29,6 @@ timeoutMs = 20000
 
 [userenv.shared]
 BETTER_AUTH_SECRET = "SRXqW1o35i2JnHvTKiYytrpRZuKAKc86zRcIdKSM6KY="
-ADMIN_EMAIL_VALUE = "farzinaayub266@gmail.com"
 
 [nix]
 channel = "stable-25_05"
