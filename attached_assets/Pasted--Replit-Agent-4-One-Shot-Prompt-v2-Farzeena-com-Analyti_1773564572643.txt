@@ -1,0 +1,724 @@
+# Replit Agent 4 — One-Shot Prompt (v2)
+## Farzeena.com — Analytics Engineering Portfolio + Full CMS Admin
+
+---
+
+> **How to use:**
+> 1. Go to [replit.com](https://replit.com) → **"+ Create"** → **"Use Agent"**
+> 2. Upload the portfolio design screenshot in the same message
+> 3. Paste everything from the divider below into the Agent chat
+> 4. When Agent shows its plan, review it, then approve to start building
+
+---
+
+## ══════════════ PASTE EVERYTHING BELOW INTO REPLIT AGENT ══════════════
+
+---
+
+Build a production-ready, fully responsive **Next.js 16 (App Router) portfolio website** for an Analytics Engineer named **Farzeena**, deployable to **Cloudflare Pages**, with a **full CMS admin panel** backed by **MongoDB Atlas**. The design reference is the attached screenshot — replicate it pixel-accurately across all device sizes.
+
+---
+
+## 🎯 PROJECT OVERVIEW
+
+**Site URL:** farzeena.com (already on Cloudflare DNS)
+**Stack — use these exact versions, install with `npm install <package>@latest` unless pinned:**
+
+| Layer | Package | Version |
+|---|---|---|
+| Framework | `next` | **16** (latest stable — `npm i next@latest`) |
+| Language | TypeScript | latest |
+| Styling | `tailwindcss` | v4 latest |
+| UI Components | `shadcn/ui` | latest |
+| Database | `mongoose` | latest |
+| Auth library | `better-auth` | latest |
+| Auth DB adapter | `better-auth/adapters/mongodb` | (built-in) |
+| Email delivery | `resend` | latest |
+| Rich text editor | `@uiw/react-md-editor` | latest |
+| MD renderer | `react-markdown` + `rehype-sanitize` | latest |
+| Notifications | `sonner` | latest |
+| Slug utility | `slugify` | latest |
+| Deployment adapter | `@cloudflare/next-on-pages` | latest |
+
+**Do NOT use:** NextAuth, Auth.js, Prisma, or any other auth library. Use **better-auth** only.
+
+---
+
+## 🗂️ COMPLETE FOLDER STRUCTURE
+
+```
+/app
+  /(public)
+    page.tsx                          ← Homepage (all 8 sections)
+    /case-studies
+      page.tsx                        ← All case studies grid
+      [slug]/page.tsx                 ← Individual case study detail
+    /blogs
+      page.tsx                        ← All blogs grid
+      [slug]/page.tsx                 ← Individual blog post
+    /about/page.tsx
+    /contact/page.tsx
+    /analytics-solutions/page.tsx
+  /(admin)
+    /admin
+      /login/page.tsx                 ← Magic link login (no sidebar)
+      /magic-link-sent/page.tsx       ← "Check your email" confirmation page
+      /dashboard/page.tsx
+      /case-studies/page.tsx
+      /case-studies/new/page.tsx
+      /case-studies/[id]/edit/page.tsx
+      /blogs/page.tsx
+      /blogs/new/page.tsx
+      /blogs/[id]/edit/page.tsx
+      /hero/page.tsx
+      /about/page.tsx
+      /navigation/page.tsx
+      /tools/page.tsx
+      /contact-submissions/page.tsx
+      /site-settings/page.tsx
+  /api
+    /auth/[...all]/route.ts           ← better-auth catch-all handler
+    /case-studies/route.ts
+    /case-studies/[id]/route.ts
+    /blogs/route.ts
+    /blogs/[id]/route.ts
+    /hero/route.ts
+    /about/route.ts
+    /site-settings/route.ts
+    /tools/route.ts
+    /contact/route.ts
+/lib
+  /mongodb.ts                         ← MongoClient singleton (for better-auth adapter)
+  /mongoose.ts                        ← Mongoose connection (for app models)
+  /auth.ts                            ← better-auth server config
+  /auth-client.ts                     ← better-auth client config
+  /utils.ts                           ← slugify, gdrive converter, etc.
+/models
+  /CaseStudy.ts
+  /Blog.ts
+  /HeroSection.ts
+  /AboutSection.ts
+  /SiteSettings.ts
+  /Tool.ts
+  /ContactSubmission.ts
+/components
+  /public/                            ← Public-facing UI components
+  /admin/                             ← Admin panel UI components
+  /ui/                                ← shadcn/ui base components
+/middleware.ts                        ← Route protection for /admin/*
+```
+
+---
+
+## 🔐 AUTHENTICATION — BETTER-AUTH + MAGIC LINK + RESEND
+
+This is the most critical part. Implement it **exactly** as described.
+
+### How it works
+1. Admin visits `/admin/login`, enters their email address
+2. App calls `authClient.signIn.magicLink({ email, callbackURL: '/admin/dashboard' })`
+3. better-auth calls the `sendMagicLink` function in `/lib/auth.ts`
+4. `sendMagicLink` uses **Resend** to email a one-time magic link to the admin
+5. Admin clicks the link in their email → better-auth verifies the token → session cookie set → redirect to `/admin/dashboard`
+6. `disableSignUp: true` — only pre-existing users in the DB can log in (no self-registration)
+
+### `/lib/auth.ts` — Server config
+```typescript
+import { betterAuth } from 'better-auth'
+import { mongodbAdapter } from 'better-auth/adapters/mongodb'
+import { magicLink } from 'better-auth/plugins'
+import { Resend } from 'resend'
+import { client } from './mongodb' // MongoClient singleton
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export const auth = betterAuth({
+  database: mongodbAdapter(client, { dbName: 'farzeena-portfolio' }),
+  plugins: [
+    magicLink({
+      disableSignUp: true,         // Only pre-seeded admins can log in
+      expiresIn: 60 * 15,          // Link expires in 15 minutes
+      sendMagicLink: async ({ email, url }) => {
+        await resend.emails.send({
+          from: 'Farzeena Admin <noreply@farzeena.com>',
+          to: email,
+          subject: 'Your Admin Login Link — farzeena.com',
+          html: `
+            <div style="font-family:Inter,sans-serif;max-width:480px;margin:auto;padding:32px">
+              <h2 style="color:#0F172A">Sign in to Farzeena Admin</h2>
+              <p style="color:#374151">Click the button below to sign in. This link expires in 15 minutes and can only be used once.</p>
+              <a href="${url}" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#1D4ED8;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">
+                Sign In to Admin
+              </a>
+              <p style="color:#6B7280;margin-top:24px;font-size:13px">If you didn't request this, ignore this email.</p>
+            </div>
+          `,
+        })
+      },
+    }),
+  ],
+})
+```
+
+### `/lib/auth-client.ts` — Client config
+```typescript
+import { createAuthClient } from 'better-auth/react'
+import { magicLinkClient } from 'better-auth/client/plugins'
+
+export const authClient = createAuthClient({
+  plugins: [magicLinkClient()],
+})
+```
+
+### `/app/api/auth/[...all]/route.ts` — API handler
+```typescript
+import { auth } from '@/lib/auth'
+import { toNextJsHandler } from 'better-auth/next-js'
+export const { GET, POST } = toNextJsHandler(auth)
+```
+
+### `/middleware.ts` — Protect all admin routes
+```typescript
+import { NextRequest, NextResponse } from 'next/server'
+import { getSessionFromRequest } from 'better-auth/next-js'
+
+export async function middleware(request: NextRequest) {
+  const session = await getSessionFromRequest(request)
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
+  const isLoginPage = request.nextUrl.pathname === '/admin/login'
+  const isMagicLinkSentPage = request.nextUrl.pathname === '/admin/magic-link-sent'
+
+  if (isAdminRoute && !isLoginPage && !isMagicLinkSentPage && !session) {
+    return NextResponse.redirect(new URL('/admin/login', request.url))
+  }
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: ['/admin/:path*'],
+  runtime: 'nodejs',   // Required — avoid Edge runtime issues with MongoDB
+}
+```
+
+### Admin Login Page (`/app/(admin)/admin/login/page.tsx`)
+- Clean, centered card (max-width 400px, white background, shadow)
+- Farzeena logo + "Admin Portal" heading
+- Email input field (full width)
+- `[Send Magic Link]` blue button
+- On submit: call `authClient.signIn.magicLink({ email, callbackURL: '/admin/dashboard' })` 
+- On success: redirect to `/admin/magic-link-sent`
+- On error: show inline error message using `sonner` toast
+
+### Magic Link Sent Page (`/app/(admin)/admin/magic-link-sent/page.tsx`)
+- Clean centered card
+- ✉️ icon + heading: "Check your email"
+- Message: "We sent a sign-in link to your email. Click it to access the admin panel. The link expires in 15 minutes."
+- Small note: "Didn't receive it? Check your spam folder."
+
+### Admin User Seeding
+- Create a seed script at `/scripts/seed-admin.ts`
+- The script uses **better-auth's internal API** to create a user directly in the MongoDB `user` collection (better-auth uses `user`, `session`, `verification` collections)
+- Seed this admin user: `{ email: 'admin@farzeena.com', name: 'Farzeena Admin', role: 'admin', emailVerified: true }`
+- Also seed sample data: 3 case studies, 3 blogs, hero section, about section, site settings
+- Script should be run with: `npx tsx scripts/seed-admin.ts`
+- Print seed instructions clearly in the README
+
+---
+
+## 📱 RESPONSIVENESS — ALL DEVICE TYPES
+
+The site must be fully responsive across these breakpoints using Tailwind:
+
+| Breakpoint | Width | Behaviour |
+|---|---|---|
+| Mobile S | 320px–479px | Single column, hamburger nav, stacked hero, horizontal-scroll cards |
+| Mobile L | 480px–767px | Same as above, slightly more horizontal space |
+| Tablet | 768px–1023px | 2-col grids, stacked hero, visible nav with reduced items |
+| Desktop | 1024px–1279px | Full layout with slightly reduced font sizes |
+| Large Desktop | 1280px+ | Full layout as per design screenshot |
+
+**Specific responsive rules:**
+- **Navigation:** Hamburger menu (☰) below 768px; full nav bar above. Dropdown menus become full-width accordions on mobile
+- **Hero section:** Two columns on ≥1024px; stacks vertically (text above, pipeline diagram below) on smaller screens. Pipeline diagram scales down to fit screen width
+- **Case studies carousel:** 5 cards visible on ≥1280px, 3 on tablet, 1.5 cards visible on mobile (horizontal scroll with snap). Touch-friendly swipe on mobile
+- **Blog grid:** 3 columns on ≥1024px, 2 columns on tablet, 1 column on mobile
+- **About + Contact:** Side by side on ≥1024px; stacked (About above, Contact below) on mobile
+- **Admin panel:** Sidebar collapses to a top hamburger menu on mobile. All forms are single-column on mobile, 2-column on tablet+
+- **Typography scales:** Use `clamp()` or responsive Tailwind classes for headings
+
+---
+
+## 🎨 PUBLIC WEBSITE — EXACT DESIGN REPLICATION
+
+Replicate the attached screenshot exactly across all sections.
+
+### 1. NAVIGATION BAR
+- Sticky top, white background, `border-b border-gray-100`, subtle backdrop blur
+- **Left:** Cloud icon (Lucide `Cloud`, blue #1D4ED8) + `"Home"` text in semi-bold
+- **Center/Right nav links:** `Home` | `Analytics Solutions ▾` (dropdown) | `Case Studies` | `Blogs` | `About ▾` (dropdown) | `Contact`
+- **Far right:** Blue pill button with 🔍 icon + `"Home"` text (`bg-primary text-white rounded-full px-4 py-2`)
+- **Mobile:** Hamburger icon (Lucide `Menu`), slide-down drawer with all links stacked
+- All nav labels and links editable from admin
+
+### 2. HERO SECTION
+- Full-width, `bg-slate-50`, min-height 80vh on desktop
+- **Left col (60%):**
+  - H1 (dark navy, 48px desktop / 32px mobile, font-weight 800): `"Analytics Engineering for Data-Driven Decision Making"`
+  - Paragraph (16px, text-gray-500): `"Designing data pipelines, analytics models, and dashboards to transform raw data into business insights."`
+  - Two buttons: `[View Case Studies]` (filled blue) + `[Explore Solutions]` (outlined blue border)
+- **Right col (40%):**
+  - White rounded card (`rounded-2xl shadow-md p-6`) showing pipeline flow diagram:
+    - 4 steps in a horizontal row with right-arrows between them: `Data Sources → Python ETL → Data Warehouse → Dashboard`
+    - Each step: icon box (teal/blue square icon) + label below
+  - Below the card: horizontal row of tool logos/icons with labels: dbt, Python, Power BI, Google Cloud, AWS, grid-icon
+- On mobile: hero stacks — text first, then pipeline card below, full width
+- ALL text, buttons, pipeline steps, and tool icons are loaded from MongoDB `HeroSection` document
+
+### 3. ANALYTICS CASE STUDIES SECTION
+- `bg-white`, `py-20`
+- Section heading `"Analytics Case Studies"` (H2, centered), subheading below
+- **Card row:** horizontal scroll container with `overflow-x-auto` + `scroll-snap-type: x mandatory`
+- **Card design** (`min-w-[260px] max-w-[280px] rounded-xl border shadow-sm flex flex-col`):
+  - Cover image (aspect-ratio 16:9, `object-cover rounded-t-xl`, loaded from Google Drive URL)
+  - Card body: Title (2 lines, `line-clamp-2`), description (3 lines, `line-clamp-3`, gray text)
+  - Tool tag chips row (e.g. `SQL`, `Python`, `Power BI` — small blue pill badges)
+  - `[View Case Study]` blue button at bottom
+- On desktop: 5 cards visible in a row
+- On tablet: 3 cards, scroll for more
+- On mobile: 1.5 cards visible, scroll for more, snap-aligned
+
+### 4. FEATURED ANALYTICS INSIGHTS (BLOGS)
+- `bg-gray-50`, `py-20`
+- Section heading `"Featured Analytics Insights"`, subheading below
+- **Grid:** `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`
+- **Card design** (`bg-white rounded-xl border shadow-sm p-6 flex flex-col`):
+  - Title (large, bold, `line-clamp-2`)
+  - Description (`line-clamp-3`, gray text)
+  - Tag chips row (colored pill badges)
+  - `[Read Article]` blue button at bottom
+
+### 5. CTA BANNER
+- Light blue gradient band (`bg-gradient-to-r from-blue-50 to-blue-100`)
+- Left: Bold text (loaded from `SiteSettings.ctaBannerText`)
+- Right: Blue `[Contact Me]` button
+- On mobile: stacks vertically, button full-width
+
+### 6. ABOUT ME SECTION
+- `bg-white`, `py-20`
+- **Two columns on desktop** (`grid grid-cols-1 lg:grid-cols-2 gap-16`):
+  - **Left:** "About Me" H2, animated `"Hi, I'm [Name]"` (CSS highlight animation on name), bio text, "Focus Areas" bulleted list with icons, industry tag chips row
+  - **Right:** Profile image (loaded from Google Drive URL, `rounded-2xl object-cover`)
+- On mobile: single column, image below text
+
+### 7. CONTACT SECTION
+- `bg-gray-50`, `py-20`, same row as About on wide screens (using grid), stacks on mobile
+- **"Contact Me"** form:
+  - Name input, Email input, Project Type (multi-select dropdown using shadcn/ui `Select` or `Combobox`), Message textarea
+  - `[Send Message]` filled blue button
+  - POST to `/api/contact`, store in MongoDB, show success toast
+- **Below form:** Social icon buttons (LinkedIn, GitHub, Twitter) — loaded from `SiteSettings`
+
+### 8. FOOTER
+- Minimal dark footer (`bg-slate-900 text-white py-6`)
+- Centered copyright text (loaded from `SiteSettings.footerText`)
+- Responsive: same on all sizes
+
+---
+
+## 🖥️ ADMIN PANEL — FULL CMS
+
+### Layout
+- Persistent sidebar on desktop (240px wide, dark navy `bg-slate-900`)
+- On mobile: sidebar hidden, top bar with hamburger → slide-over drawer
+- Sidebar nav items: Dashboard | Case Studies | Blogs | Hero Section | About Section | Navigation | Tools | Site Settings | Contact Submissions
+- Top bar: Page title + logged-in email + Sign Out button
+- Sign out calls `authClient.signOut()` → redirect to `/admin/login`
+
+### Admin Dashboard (`/admin/dashboard`)
+- Stats cards row: Total Published Case Studies | Total Published Blogs | Unread Contact Submissions
+- Recent changes list (last 5 edits with timestamp)
+- All numbers pulled live from MongoDB
+
+### Case Studies Manager (`/admin/case-studies`)
+- Responsive table (horizontal scroll on mobile): Title | Status | Featured | Sort | Date | Actions (Edit, Delete)
+- `[+ New Case Study]` button → `/admin/case-studies/new`
+- Delete shows confirmation dialog before deleting
+- **Create/Edit form fields:**
+  - Title (text) → auto-generates slug (editable)
+  - Short description (textarea, 160 char counter)
+  - Full content (Markdown editor using `@uiw/react-md-editor`)
+  - Cover image URL (text input for Google Drive share link → auto-converts to embed URL → live preview below input)
+  - Tool tags (tag input — type and press Enter/comma to add, click × to remove)
+  - Status toggle: `Draft` / `Published`
+  - Featured toggle (checkbox — shows on homepage)
+  - Sort order (number)
+  - Document/attachment URL (Google Drive link)
+  - SEO fields: Meta title, meta description
+
+### Blog Manager (`/admin/blogs`)
+- Same structure as Case Studies manager
+- **Extra fields:** Reading time estimate (auto-calculated from content word count, displayed read-only)
+
+### Hero Section Editor (`/admin/hero`)
+- Form with live preview panel on the right (desktop) / below (mobile)
+- Fields: Main heading, subtitle, CTA 1 text + link, CTA 2 text + link
+- Pipeline steps editor: add/remove/reorder (each step: label + icon name)
+- Tool icons: add/remove/reorder (each: name + icon URL)
+- `[Save Changes]` button → PUT `/api/hero`
+
+### About Section Editor (`/admin/about`)
+- Fields: Name, bio, profile image URL (Google Drive link, live preview)
+- Focus areas: drag-to-reorder list — each item: icon name (Lucide) + text. Add / Delete buttons
+- Industry tags: add/delete/reorder tags
+
+### Navigation Editor (`/admin/navigation`)
+- Edit all top-level nav link labels and URLs
+- Dropdown items editor for "Analytics Solutions" and "About" menus
+
+### Tools/Tech Stack Editor (`/admin/tools`)
+- Table: Tool name | Icon URL | Category | Sort order | Actions
+- Add / Edit / Delete tools
+
+### Site Settings (`/admin/site-settings`)
+- Site title, CTA banner text, footer copyright text
+- Social links: LinkedIn, GitHub, Twitter/X
+- Contact email
+- SEO: default meta title template, default meta description
+
+### Contact Submissions (`/admin/contact-submissions`)
+- Table (mobile-responsive): Name | Email | Project Type | Preview of message | Date | Read? | Delete
+- Click row to expand full message
+- Mark as read / unread toggle
+- Bulk delete
+
+---
+
+## 🗄️ MONGODB SCHEMAS (Mongoose)
+
+```typescript
+// models/CaseStudy.ts
+{
+  title: String,
+  slug: { type: String, unique: true },
+  shortDescription: String,          // max 160 chars
+  content: String,                   // Markdown
+  coverImageUrl: String,             // Google Drive share link
+  tools: [String],
+  status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+  featured: { type: Boolean, default: false },
+  sortOrder: { type: Number, default: 0 },
+  documentUrl: String,
+  metaTitle: String,
+  metaDescription: String,
+  createdAt: Date,
+  updatedAt: Date,
+}
+
+// models/Blog.ts
+{
+  title: String,
+  slug: { type: String, unique: true },
+  shortDescription: String,
+  content: String,                   // Markdown
+  coverImageUrl: String,
+  tags: [String],
+  status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+  featured: { type: Boolean, default: false },
+  sortOrder: { type: Number, default: 0 },
+  metaTitle: String,
+  metaDescription: String,
+  createdAt: Date,
+  updatedAt: Date,
+}
+
+// models/HeroSection.ts  (singleton — always findOne())
+{
+  heading: String,
+  subtitle: String,
+  cta1Text: String,
+  cta1Link: String,
+  cta2Text: String,
+  cta2Link: String,
+  pipelineSteps: [{ label: String, iconName: String, order: Number }],
+  toolIcons: [{ name: String, iconUrl: String, order: Number }],
+  updatedAt: Date,
+}
+
+// models/AboutSection.ts  (singleton)
+{
+  name: String,
+  bio: String,
+  profileImageUrl: String,
+  focusAreas: [{ icon: String, text: String, order: Number }],
+  industryTags: [{ label: String, order: Number }],
+  updatedAt: Date,
+}
+
+// models/SiteSettings.ts  (singleton)
+{
+  siteTitle: String,
+  ctaBannerText: String,
+  footerText: String,
+  linkedinUrl: String,
+  githubUrl: String,
+  twitterUrl: String,
+  contactEmail: String,
+  metaTitleTemplate: String,
+  defaultMetaDescription: String,
+  updatedAt: Date,
+}
+
+// models/ContactSubmission.ts
+{
+  name: String,
+  email: String,
+  projectType: [String],
+  message: String,
+  read: { type: Boolean, default: false },
+  createdAt: Date,
+}
+
+// Note: better-auth manages its own 'user', 'session', 'verification' collections
+// Do NOT define Mongoose models for these — let better-auth handle them via MongoClient
+```
+
+---
+
+## ⚙️ ENVIRONMENT VARIABLES
+
+Create both `.env.local` (for development) and `.env.local.example` (template for deployment).
+
+```bash
+# MongoDB
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/farzeena-portfolio
+
+# Better Auth
+BETTER_AUTH_SECRET=<generate: openssl rand -base64 32>
+BETTER_AUTH_URL=http://localhost:3000       # Change to https://farzeena.com in production
+
+# Resend
+RESEND_API_KEY=re_<your-resend-api-key>
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000   # Change to https://farzeena.com in production
+```
+
+---
+
+## 🚀 CLOUDFLARE PAGES DEPLOYMENT CONFIGURATION
+
+### Install adapter
+```bash
+npm install @cloudflare/next-on-pages
+```
+
+### `next.config.ts`
+```typescript
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  // Required for @cloudflare/next-on-pages
+  experimental: {
+    runtime: 'nodejs',
+  },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'drive.google.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+    ],
+  },
+}
+
+export default nextConfig
+```
+
+### `wrangler.toml`
+```toml
+name = "farzeena-portfolio"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[vars]
+NEXT_PUBLIC_APP_URL = "https://farzeena.com"
+```
+
+### `package.json` build scripts
+```json
+{
+  "scripts": {
+    "build:cloudflare": "npx @cloudflare/next-on-pages",
+    "preview": "npx wrangler pages dev .vercel/output/static"
+  }
+}
+```
+
+### `DEPLOYMENT.md`
+Create a detailed `DEPLOYMENT.md` file with step-by-step instructions:
+1. Push code to GitHub
+2. Connect GitHub repo to Cloudflare Pages (Build command: `npm run build:cloudflare`, output: `.vercel/output/static`)
+3. Add all environment variables in Cloudflare Pages dashboard → Settings → Environment Variables
+4. Add custom domain: Pages → Custom Domains → add `farzeena.com` (DNS already in Cloudflare, it will auto-configure)
+5. Set `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` to `https://farzeena.com` in production env vars
+6. Verify Resend domain: add `farzeena.com` as a sender domain in Resend dashboard, configure DNS records
+
+---
+
+## 🎨 DESIGN SYSTEM
+
+```css
+/* Exact color palette */
+--primary:        #1D4ED8   /* Main CTA blue */
+--primary-hover:  #1E40AF
+--primary-light:  #EFF6FF   /* Section backgrounds */
+--navy:           #0F172A   /* H1/H2 headings */
+--text-body:      #374151
+--text-muted:     #6B7280
+--border:         #E5E7EB
+--surface:        #F8FAFC   /* Card backgrounds */
+--white:          #FFFFFF
+
+/* Typography — import Inter from Google Fonts */
+H1:    clamp(28px, 5vw, 48px), weight 800, color: --navy
+H2:    clamp(24px, 4vw, 36px), weight 700, color: --navy
+H3:    clamp(18px, 3vw, 24px), weight 600
+Body:  16px, weight 400, color: --text-body
+Small: 12px, weight 500
+
+/* Spacing */
+Section padding: py-16 md:py-20
+Card gap: gap-4 md:gap-6
+
+/* Borders & Shadows */
+Border radius: cards 12px, buttons 8px, tags 999px
+Card shadow: shadow-sm (Tailwind)
+Hover card: shadow-md transition-shadow duration-200
+```
+
+---
+
+## 🔧 UTILITY FUNCTIONS (`/lib/utils.ts`)
+
+Implement these utilities — they are used throughout the app:
+
+```typescript
+// Convert Google Drive share link → direct embed URL
+// Input:  https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+// Output: https://drive.google.com/uc?export=view&id=FILE_ID
+export function getGoogleDriveImageUrl(shareUrl: string): string {
+  const match = shareUrl.match(/\/d\/([\w-]+)/)
+  if (!match) return shareUrl
+  return `https://drive.google.com/uc?export=view&id=${match[1]}`
+}
+
+// Generate URL slug from title
+export function generateSlug(title: string): string {
+  return slugify(title, { lower: true, strict: true, trim: true })
+}
+
+// Estimate reading time from Markdown content
+export function estimateReadingTime(content: string): number {
+  const wordsPerMinute = 200
+  const words = content.trim().split(/\s+/).length
+  return Math.ceil(words / wordsPerMinute)
+}
+```
+
+---
+
+## 🔧 ADDITIONAL REQUIREMENTS
+
+1. **SEO:** Every public page must implement `generateMetadata()`. Case study and blog detail pages use title/description from MongoDB. Default fallback from `SiteSettings`.
+
+2. **Skeleton loaders:** Show Tailwind-animated skeleton placeholders while fetching case studies and blogs on homepage.
+
+3. **Toast notifications:** Use `sonner` `<Toaster />` in the root layout. All admin save/delete/error actions use `toast.success()` / `toast.error()`.
+
+4. **404 page:** `/app/not-found.tsx` — styled to match the site design.
+
+5. **Loading UI:** `/app/loading.tsx` for global Suspense fallback.
+
+6. **Google Drive images:** Always pass Google Drive links through `getGoogleDriveImageUrl()` before rendering in `<Image>` or `<img>` tags.
+
+7. **Contact form validation:** Client-side: required fields, valid email format. Server-side: validate in API route before saving. Return meaningful error messages.
+
+8. **Admin-only access:** `disableSignUp: true` in better-auth means only pre-seeded admin users can receive magic links. If an unknown email is entered, show: "This email is not authorized. Contact the site owner."
+
+9. **Session check in admin layouts:** The `(admin)` layout component should call `auth.api.getSession()` server-side and redirect to `/admin/login` if no session. This is a belt-and-suspenders check alongside middleware.
+
+10. **Next.js 16 features:** Use Server Actions for form submissions where appropriate. Use `use cache` directive for static content fetches. Use stable React Compiler (enabled by default in Next.js 16).
+
+11. **Markdown rendering:** On case study and blog detail pages, render Markdown content with `react-markdown` + `rehype-sanitize`. Style with Tailwind `prose` class (`@tailwindcss/typography` plugin).
+
+12. **Drag-to-reorder in admin:** Use `@dnd-kit/core` + `@dnd-kit/sortable` for reordering pipeline steps, focus areas, and industry tags in admin editors.
+
+13. **README.md:** Include: project overview, local setup steps, env var explanations, seed script instructions, Resend domain setup steps, Cloudflare Pages deploy steps.
+
+---
+
+## 🌱 SEED DATA (`/scripts/seed-admin.ts`)
+
+Seed the following on first run:
+
+**Admin user** (in better-auth's `user` collection):
+```json
+{ "email": "admin@farzeena.com", "name": "Farzeena Admin", "emailVerified": true }
+```
+
+**3 Case Studies** (all `status: published`, `featured: true`):
+1. Real Estate Marketplace Analytics — SQL, Python, Power BI
+2. Airline Revenue Intelligence — SQL, Python, Sypitka
+3. Ecommerce Funnel Analytics — SQL, Python, Power BI, Kaggle
+
+**3 Blogs** (all `status: published`, `featured: true`):
+1. SQL Techniques for Product Analytics — SQL, Data Analytics Engineering, Data Pipelines
+2. Designing Data Warehouses for Analytics — Data Modeling, PostgreSQL, Business Intelligence
+3. Building Data Pipelines with Python — Python, ETL Pipelines, AWS
+
+**HeroSection:** seed with the text and steps visible in the screenshot
+
+**AboutSection:** seed with placeholder Farzeena bio text
+
+**SiteSettings:** seed with `ctaBannerText: "Testing Analytics Insights"`, `footerText: "© 2025 Farzeena. All rights reserved."`, placeholder social links
+
+---
+
+## ✅ ACCEPTANCE CRITERIA
+
+Agent must verify all of these before declaring the build complete:
+
+- [ ] Homepage renders all 8 sections matching the design screenshot
+- [ ] All homepage content (text, buttons, cards) is loaded from MongoDB — nothing hardcoded
+- [ ] Homepage is fully responsive: mobile (320px), tablet (768px), desktop (1280px)
+- [ ] Case study cards are horizontally scrollable with snap on mobile
+- [ ] Blog section reflows to 1 column on mobile
+- [ ] Admin login shows a clean magic link email entry form
+- [ ] Submitting the login form sends a Resend email with a working magic link
+- [ ] Only admin@farzeena.com (or users in the DB) can receive magic links (disableSignUp: true enforced)
+- [ ] Clicking the magic link sets a session and redirects to `/admin/dashboard`
+- [ ] All `/admin/*` routes redirect to `/admin/login` when not authenticated
+- [ ] Admin can create, edit, delete, publish/draft case studies and blogs
+- [ ] Admin can edit hero, about, navigation, tools, site settings
+- [ ] Contact form submissions are saved to MongoDB and visible in admin table
+- [ ] Google Drive link conversion utility works correctly
+- [ ] `@cloudflare/next-on-pages` build config in place with `wrangler.toml`
+- [ ] `.env.local.example` has all required variable keys with comments
+- [ ] `DEPLOYMENT.md` has complete step-by-step Cloudflare Pages instructions
+- [ ] `README.md` has local setup, seed script, and deployment instructions
+- [ ] No TypeScript errors on `npm run build`
+
+---
+
+> **Agent Note:** Build in this order for maximum stability:
+> 1. MongoDB connection (`/lib/mongodb.ts`, `/lib/mongoose.ts`)
+> 2. Mongoose models
+> 3. better-auth config (`/lib/auth.ts`, `/lib/auth-client.ts`, `/app/api/auth/[...all]/route.ts`)
+> 4. Middleware
+> 5. Seed script (run it to populate DB)
+> 6. API routes
+> 7. Public pages (homepage first, then detail pages)
+> 8. Admin panel (login → dashboard → CMS sections)
+> 9. Cloudflare deployment config
+> 10. README + DEPLOYMENT.md
+>
+> Use the design screenshot as the visual reference throughout. Do not skip any section. Ensure all Tailwind responsive classes are correct and tested.
