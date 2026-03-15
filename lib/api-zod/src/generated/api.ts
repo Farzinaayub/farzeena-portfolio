@@ -548,13 +548,26 @@ export const GetDashboardStatsResponse = zod.object({
 });
 
 /**
- * @summary Request a magic link login email
+ * @summary Send a one-time password to the admin email
  */
-export const RequestMagicLinkBody = zod.object({
+export const SendOtpBody = zod.object({
   email: zod.string().email(),
 });
 
-export const RequestMagicLinkResponse = zod.object({
+export const SendOtpResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string().optional(),
+});
+
+/**
+ * @summary Verify OTP code and sign in
+ */
+export const VerifyOtpBody = zod.object({
+  email: zod.string().email(),
+  otp: zod.string(),
+});
+
+export const VerifyOtpResponse = zod.object({
   success: zod.boolean(),
   message: zod.string().optional(),
 });

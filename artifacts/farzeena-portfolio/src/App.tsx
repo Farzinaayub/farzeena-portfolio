@@ -20,7 +20,6 @@ import BlogDetail from "@/pages/public/BlogDetail";
 
 // Admin Pages
 import Login from "@/pages/admin/Login";
-import MagicLinkSent from "@/pages/admin/MagicLinkSent";
 import Dashboard from "@/pages/admin/Dashboard";
 import { CaseStudiesManager, BlogsManager } from "@/pages/admin/ContentManagers";
 import { CaseStudyEditor, BlogEditor } from "@/pages/admin/ContentEditor";
@@ -94,7 +93,6 @@ function Router() {
 
       {/* Admin Auth Routes */}
       <Route path="/admin/login" component={Login} />
-      <Route path="/admin/magic-link-sent" component={MagicLinkSent} />
 
       {/* Admin Protected Routes */}
       <AdminRoute path="/admin" component={Dashboard} />

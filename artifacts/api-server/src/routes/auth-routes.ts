@@ -5,7 +5,7 @@ import { client, dbName } from "../lib/mongodb.js";
 
 const router = Router();
 
-router.post("/request-magic-link", async (req: Request, res: Response) => {
+router.post("/send-otp", async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     if (!email) {
@@ -19,30 +19,59 @@ router.post("/request-magic-link", async (req: Request, res: Response) => {
     if (!user) {
       return res.status(403).json({
         error: "Unauthorized",
-        message:
-          "This email is not authorized. Contact the site owner.",
+        message: "This email is not authorized. Contact the site owner.",
       });
     }
 
-    const url = new URL(req.url, `${req.protocol}://${req.get("host")}`);
-    const callbackUrl = `${req.protocol}://${req.get("host")}/admin/dashboard`;
-
-    const response = await auth.api.signInMagicLink({
-      body: { email, callbackURL: callbackUrl },
+    const response = await auth.api.sendVerificationOTP({
+      body: { email, type: "sign-in" },
       asResponse: true,
     });
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
       return res.status(response.status).json({
-        error: "Failed to send magic link",
+        error: "Failed to send OTP",
         message: (data as { message?: string }).message || "Unknown error",
       });
     }
 
-    res.json({ success: true, message: "Magic link sent to your email" });
+    res.json({ success: true, message: "OTP sent to your email" });
   } catch (err) {
-    console.error("Magic link error:", err);
+    console.error("Send OTP error:", err);
+    res.status(500).json({ error: "Server error", message: String(err) });
+  }
+});
+
+router.post("/verify-otp", async (req: Request, res: Response) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({ error: "Email and OTP are required" });
+    }
+
+    const response = await auth.api.signInEmailOTP({
+      body: { email, otp },
+      asResponse: true,
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      return res.status(response.status).json({
+        error: "Invalid OTP",
+        message: (data as { message?: string }).message || "The code is incorrect or has expired.",
+      });
+    }
+
+    const data = await response.json();
+    const setCookieHeader = response.headers.get("set-cookie");
+    if (setCookieHeader) {
+      res.setHeader("Set-Cookie", setCookieHeader);
+    }
+
+    res.json({ success: true, message: "Signed in successfully", user: (data as { user?: unknown }).user });
+  } catch (err) {
+    console.error("Verify OTP error:", err);
     res.status(500).json({ error: "Server error", message: String(err) });
   }
 });

@@ -8,8 +8,6 @@ import siteSettingsRouter from "./site-settings.js";
 import contactRouter from "./contact.js";
 import contactSubmissionsRouter from "./contact-submissions.js";
 import dashboardRouter from "./dashboard.js";
-import authRoutesRouter from "./auth-routes.js";
-
 const router: IRouter = Router();
 
 router.use(healthRouter);
@@ -21,6 +19,5 @@ router.use("/site-settings", siteSettingsRouter);
 router.use("/contact", contactRouter);
 router.use("/contact-submissions", contactSubmissionsRouter);
 router.use("/dashboard", dashboardRouter);
-router.use("/auth", authRoutesRouter);
 
 export default router;

@@ -33,12 +33,13 @@ import type {
   HeroSectionInput,
   ListBlogsParams,
   ListCaseStudiesParams,
-  RequestMagicLinkBody,
+  SendOtpBody,
   SessionInfo,
   SiteSettings,
   SiteSettingsInput,
   SuccessResponse,
   UpdateContactSubmissionBody,
+  VerifyOtpBody,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -1971,42 +1972,42 @@ export function useGetDashboardStats<
 }
 
 /**
- * @summary Request a magic link login email
+ * @summary Send a one-time password to the admin email
  */
-export const getRequestMagicLinkUrl = () => {
-  return `/api/auth/request-magic-link`;
+export const getSendOtpUrl = () => {
+  return `/api/auth/send-otp`;
 };
 
-export const requestMagicLink = async (
-  requestMagicLinkBody: RequestMagicLinkBody,
+export const sendOtp = async (
+  sendOtpBody: SendOtpBody,
   options?: RequestInit,
 ): Promise<SuccessResponse> => {
-  return customFetch<SuccessResponse>(getRequestMagicLinkUrl(), {
+  return customFetch<SuccessResponse>(getSendOtpUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(requestMagicLinkBody),
+    body: JSON.stringify(sendOtpBody),
   });
 };
 
-export const getRequestMagicLinkMutationOptions = <
+export const getSendOtpMutationOptions = <
   TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof requestMagicLink>>,
+    Awaited<ReturnType<typeof sendOtp>>,
     TError,
-    { data: BodyType<RequestMagicLinkBody> },
+    { data: BodyType<SendOtpBody> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof requestMagicLink>>,
+  Awaited<ReturnType<typeof sendOtp>>,
   TError,
-  { data: BodyType<RequestMagicLinkBody> },
+  { data: BodyType<SendOtpBody> },
   TContext
 > => {
-  const mutationKey = ["requestMagicLink"];
+  const mutationKey = ["sendOtp"];
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -2016,44 +2017,130 @@ export const getRequestMagicLinkMutationOptions = <
     : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof requestMagicLink>>,
-    { data: BodyType<RequestMagicLinkBody> }
+    Awaited<ReturnType<typeof sendOtp>>,
+    { data: BodyType<SendOtpBody> }
   > = (props) => {
     const { data } = props ?? {};
 
-    return requestMagicLink(data, requestOptions);
+    return sendOtp(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type RequestMagicLinkMutationResult = NonNullable<
-  Awaited<ReturnType<typeof requestMagicLink>>
+export type SendOtpMutationResult = NonNullable<
+  Awaited<ReturnType<typeof sendOtp>>
 >;
-export type RequestMagicLinkMutationBody = BodyType<RequestMagicLinkBody>;
-export type RequestMagicLinkMutationError = ErrorType<ErrorResponse>;
+export type SendOtpMutationBody = BodyType<SendOtpBody>;
+export type SendOtpMutationError = ErrorType<ErrorResponse>;
 
 /**
- * @summary Request a magic link login email
+ * @summary Send a one-time password to the admin email
  */
-export const useRequestMagicLink = <
+export const useSendOtp = <
   TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof requestMagicLink>>,
+    Awaited<ReturnType<typeof sendOtp>>,
     TError,
-    { data: BodyType<RequestMagicLinkBody> },
+    { data: BodyType<SendOtpBody> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
-  Awaited<ReturnType<typeof requestMagicLink>>,
+  Awaited<ReturnType<typeof sendOtp>>,
   TError,
-  { data: BodyType<RequestMagicLinkBody> },
+  { data: BodyType<SendOtpBody> },
   TContext
 > => {
-  return useMutation(getRequestMagicLinkMutationOptions(options));
+  return useMutation(getSendOtpMutationOptions(options));
+};
+
+/**
+ * @summary Verify OTP code and sign in
+ */
+export const getVerifyOtpUrl = () => {
+  return `/api/auth/verify-otp`;
+};
+
+export const verifyOtp = async (
+  verifyOtpBody: VerifyOtpBody,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getVerifyOtpUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(verifyOtpBody),
+  });
+};
+
+export const getVerifyOtpMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyOtp>>,
+    TError,
+    { data: BodyType<VerifyOtpBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof verifyOtp>>,
+  TError,
+  { data: BodyType<VerifyOtpBody> },
+  TContext
+> => {
+  const mutationKey = ["verifyOtp"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof verifyOtp>>,
+    { data: BodyType<VerifyOtpBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return verifyOtp(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type VerifyOtpMutationResult = NonNullable<
+  Awaited<ReturnType<typeof verifyOtp>>
+>;
+export type VerifyOtpMutationBody = BodyType<VerifyOtpBody>;
+export type VerifyOtpMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Verify OTP code and sign in
+ */
+export const useVerifyOtp = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyOtp>>,
+    TError,
+    { data: BodyType<VerifyOtpBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof verifyOtp>>,
+  TError,
+  { data: BodyType<VerifyOtpBody> },
+  TContext
+> => {
+  return useMutation(getVerifyOtpMutationOptions(options));
 };
 
 /**

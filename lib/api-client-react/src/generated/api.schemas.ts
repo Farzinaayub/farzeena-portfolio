@@ -267,6 +267,11 @@ export type UpdateContactSubmissionBody = {
   read: boolean;
 };
 
-export type RequestMagicLinkBody = {
+export type SendOtpBody = {
   email: string;
+};
+
+export type VerifyOtpBody = {
+  email: string;
+  otp: string;
 };
