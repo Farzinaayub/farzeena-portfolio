@@ -21,7 +21,7 @@ export const auth = betterAuth({
       async sendVerificationOTP({ email, otp, type }) {
         console.log(`\n🔐 OTP CODE for ${email}: ${otp}\n`);
         await resend.emails.send({
-          from: "Farzeena Admin <onboarding@resend.dev>",
+          from: "Farzeena Admin <admin@farzeena.com>",
           to: email,
           subject: "Your Admin Login Code — Farzeena Portfolio",
           html: `
