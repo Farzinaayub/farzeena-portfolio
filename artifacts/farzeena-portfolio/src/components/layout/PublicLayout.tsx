@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const { data: settings } = useGetSiteSettings();
 
   useEffect(() => {
@@ -26,9 +26,24 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     { href: "/", label: "Home" },
     { href: "/case-studies", label: "Case Studies" },
     { href: "/blogs", label: "Insights" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/#about", label: "About" },
+    { href: "/#contact", label: "Contact" },
   ];
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    if (!href.startsWith("/#")) return;
+    e.preventDefault();
+    const sectionId = href.slice(2);
+    setMobileMenuOpen(false);
+    if (location === "/") {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
@@ -55,9 +70,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               <Link 
                 key={link.href} 
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
-                  location === link.href 
+                  location === link.href || (link.href === "/" && location === "/")
                     ? "bg-primary text-white shadow-md shadow-primary/25" 
                     : "text-muted-foreground hover:text-foreground hover:bg-black/5"
                 )}
@@ -98,6 +114,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <Link 
                   key={link.href} 
                   href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className={cn(
                     "p-4 rounded-xl text-lg font-semibold transition-colors",
                     location === link.href ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
