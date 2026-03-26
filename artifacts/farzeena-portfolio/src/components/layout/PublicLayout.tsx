@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useGetSiteSettings } from "@workspace/api-client-react";
-import { Menu, X, Search, Cloud, Github, Linkedin, Twitter, FileText } from "lucide-react";
+import { Menu, X, Search, Cloud, Github, Linkedin, Twitter } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -68,14 +68,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link 
-              href="/admin/login" 
-              className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-white border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
-              title="Admin Login"
-            >
-              <FileText className="w-4 h-4" />
-            </Link>
-            
             <button className="hidden sm:flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-colors text-sm font-semibold">
               <Search className="w-4 h-4" />
               <span>Search</span>
@@ -114,12 +106,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   {link.label}
                 </Link>
               ))}
-              <Link 
-                href="/admin/login"
-                className="mt-4 p-4 text-center rounded-xl bg-slate-900 text-white font-semibold"
-              >
-                Admin Portal
-              </Link>
             </nav>
           </motion.div>
         )}
