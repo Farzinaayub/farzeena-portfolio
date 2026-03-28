@@ -314,16 +314,55 @@ export default function Home() {
             </div>
 
             <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
-               <div className="relative">
-                 <div className="absolute inset-0 bg-primary/10 rounded-3xl transform translate-x-6 translate-y-6"></div>
-                 <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-3xl overflow-hidden relative z-10 border-4 border-white shadow-xl bg-slate-100">
-                   {about?.profileImageUrl ? (
-                     <img src={getGoogleDriveImageUrl(about.profileImageUrl)} alt={about?.name} className="w-full h-full object-cover" />
-                   ) : (
-                     <img src={`${import.meta.env.BASE_URL}images/hijabi-portrait.png`} alt="Farzeena" className="w-full h-full object-cover object-top" />
-                   )}
-                 </div>
-               </div>
+              <div className="relative">
+                {/* Soft ambient glows */}
+                <div className="absolute -top-10 -right-10 w-56 h-56 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-8 -left-10 w-40 h-40 bg-indigo-300/25 rounded-full blur-2xl pointer-events-none" />
+
+                {/* Dot grid — top-left */}
+                <div className="absolute -top-5 -left-5 grid grid-cols-4 gap-[6px] z-20 opacity-70">
+                  {Array(16).fill(0).map((_, i) => (
+                    <div key={i} className="w-[5px] h-[5px] rounded-full bg-primary/60" />
+                  ))}
+                </div>
+
+                {/* Dot grid — bottom-right */}
+                <div className="absolute -bottom-5 -right-5 grid grid-cols-4 gap-[6px] z-20 opacity-50">
+                  {Array(16).fill(0).map((_, i) => (
+                    <div key={i} className="w-[5px] h-[5px] rounded-full bg-navy/50" />
+                  ))}
+                </div>
+
+                {/* Offset border layer */}
+                <div className="absolute inset-0 rounded-3xl border-2 border-primary/30 translate-x-5 translate-y-5 z-0" />
+                {/* Offset fill layer */}
+                <div className="absolute inset-0 rounded-3xl bg-primary/10 translate-x-3 translate-y-3 z-0" />
+
+                {/* Main image frame */}
+                <div className="relative z-10 w-64 h-64 sm:w-80 sm:h-80 md:w-[22rem] md:h-[22rem] rounded-3xl overflow-hidden border-4 border-white shadow-2xl bg-slate-100">
+                  {about?.profileImageUrl ? (
+                    <img
+                      src={getGoogleDriveImageUrl(about.profileImageUrl)}
+                      alt={about?.name}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  ) : (
+                    <img
+                      src={`${import.meta.env.BASE_URL}images/hijabi-portrait.png`}
+                      alt="Farzeena"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  )}
+                  {/* Theme colour tint overlay */}
+                  <div className="absolute inset-0 bg-primary/10 mix-blend-multiply pointer-events-none" />
+                </div>
+
+                {/* Floating badge chip */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 bg-white rounded-full px-4 py-1.5 shadow-lg border border-slate-100 flex items-center gap-2 whitespace-nowrap">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-xs font-semibold text-slate-700">Analytics Engineer</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
