@@ -42,7 +42,7 @@ export function HeroEditor() {
         cta2Text: existing.cta2Text || "",
         cta2Link: existing.cta2Link || "",
         pipelineSteps: existing.pipelineSteps || [],
-        toolIcons: existing.toolIcons || [],
+        toolIcons: [],
       });
     }
   }, [existing]);
@@ -97,79 +97,51 @@ export function HeroEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6">
+        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-5">
           <div className="flex justify-between items-center">
-            <h3 className="font-bold text-lg text-navy">Pipeline Steps</h3>
-            <button type="button" onClick={() => setFormData(p => ({ ...p, pipelineSteps: [...(p.pipelineSteps||[]), { label: '', iconName: '', order: (p.pipelineSteps?.length||0) }] }))} className="px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-lg font-semibold flex items-center gap-1">
-              <Plus className="w-4 h-4" /> Add Step
+            <div>
+              <h3 className="font-bold text-lg text-navy">Rotating Taglines</h3>
+              <p className="text-xs text-slate-500 mt-0.5">These lines slide automatically in the hero. Add up to 6.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, pipelineSteps: [...(p.pipelineSteps||[]), { label: '', iconName: '', order: (p.pipelineSteps?.length||0) }] }))}
+              className="px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-lg font-semibold flex items-center gap-1"
+            >
+              <Plus className="w-4 h-4" /> Add Line
             </button>
           </div>
-          
+
           <div className="space-y-3">
             {formData.pipelineSteps?.map((step, idx) => (
-              <div key={idx} className="flex gap-4 items-center">
-                <input type="text" placeholder="Label (e.g. Data Sources)" value={step.label} onChange={e => {
-                  const newSteps = [...(formData.pipelineSteps||[])];
-                  newSteps[idx].label = e.target.value;
-                  setFormData({...formData, pipelineSteps: newSteps});
-                }} className="flex-1 px-4 py-2 border rounded-lg" />
-                <input type="text" placeholder="Icon Name" value={step.iconName} onChange={e => {
-                  const newSteps = [...(formData.pipelineSteps||[])];
-                  newSteps[idx].iconName = e.target.value;
-                  setFormData({...formData, pipelineSteps: newSteps});
-                }} className="flex-1 px-4 py-2 border rounded-lg" />
-                <input type="number" placeholder="Order" value={step.order} onChange={e => {
-                  const newSteps = [...(formData.pipelineSteps||[])];
-                  newSteps[idx].order = Number(e.target.value);
-                  setFormData({...formData, pipelineSteps: newSteps});
-                }} className="w-24 px-4 py-2 border rounded-lg" />
-                <button type="button" onClick={() => {
-                  const newSteps = formData.pipelineSteps?.filter((_, i) => i !== idx);
-                  setFormData({...formData, pipelineSteps: newSteps});
-                }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
-                  <Trash2 className="w-5 h-5" />
+              <div key={idx} className="flex gap-3 items-center">
+                <span className="text-slate-400 text-sm font-mono w-5 shrink-0 text-right">{idx + 1}.</span>
+                <input
+                  type="text"
+                  placeholder={`e.g. "Building BI dashboards that drive decisions"`}
+                  value={step.label}
+                  onChange={e => {
+                    const newSteps = [...(formData.pipelineSteps||[])];
+                    newSteps[idx] = { ...newSteps[idx], label: e.target.value };
+                    setFormData({...formData, pipelineSteps: newSteps});
+                  }}
+                  className="flex-1 px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newSteps = formData.pipelineSteps?.filter((_, i) => i !== idx);
+                    setFormData({...formData, pipelineSteps: newSteps});
+                  }}
+                  className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
-            {(!formData.pipelineSteps || formData.pipelineSteps.length === 0) && <p className="text-slate-500 text-sm italic">No steps added.</p>}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-lg text-navy">Tool Icons</h3>
-            <button type="button" onClick={() => setFormData(p => ({ ...p, toolIcons: [...(p.toolIcons||[]), { name: '', iconUrl: '', order: (p.toolIcons?.length||0) }] }))} className="px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-lg font-semibold flex items-center gap-1">
-              <Plus className="w-4 h-4" /> Add Tool
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {formData.toolIcons?.map((tool, idx) => (
-              <div key={idx} className="flex gap-4 items-center">
-                <input type="text" placeholder="Name" value={tool.name} onChange={e => {
-                  const newTools = [...(formData.toolIcons||[])];
-                  newTools[idx].name = e.target.value;
-                  setFormData({...formData, toolIcons: newTools});
-                }} className="flex-1 px-4 py-2 border rounded-lg" />
-                <input type="text" placeholder="Icon URL" value={tool.iconUrl} onChange={e => {
-                  const newTools = [...(formData.toolIcons||[])];
-                  newTools[idx].iconUrl = e.target.value;
-                  setFormData({...formData, toolIcons: newTools});
-                }} className="flex-1 px-4 py-2 border rounded-lg" />
-                <input type="number" placeholder="Order" value={tool.order} onChange={e => {
-                  const newTools = [...(formData.toolIcons||[])];
-                  newTools[idx].order = Number(e.target.value);
-                  setFormData({...formData, toolIcons: newTools});
-                }} className="w-24 px-4 py-2 border rounded-lg" />
-                <button type="button" onClick={() => {
-                  const newTools = formData.toolIcons?.filter((_, i) => i !== idx);
-                  setFormData({...formData, toolIcons: newTools});
-                }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              </div>
-            ))}
-            {(!formData.toolIcons || formData.toolIcons.length === 0) && <p className="text-slate-500 text-sm italic">No tool icons added.</p>}
+            {(!formData.pipelineSteps || formData.pipelineSteps.length === 0) && (
+              <p className="text-slate-400 text-sm italic py-2">No taglines yet — add some above, or defaults will be used.</p>
+            )}
           </div>
         </div>
 
