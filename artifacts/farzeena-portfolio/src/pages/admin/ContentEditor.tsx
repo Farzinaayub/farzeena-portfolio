@@ -189,8 +189,8 @@ export function CaseStudyEditor({ params }: { params?: { id?: string } }) {
             <label className="text-sm font-semibold text-slate-700">Cover Image URL</label>
             <input type="text" value={formData.coverImageUrl} onChange={(e) => setFormData({ ...formData, coverImageUrl: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://" />
             {formData.coverImageUrl && (
-              <div className="mt-2 h-40 bg-slate-100 rounded-lg overflow-hidden border">
-                <img src={getGoogleDriveImageUrl(formData.coverImageUrl)} alt="Cover Preview" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <div className="mt-2 aspect-video w-full rounded-xl overflow-hidden border bg-slate-100">
+                <img src={getGoogleDriveImageUrl(formData.coverImageUrl)} alt="Cover Preview" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               </div>
             )}
           </div>
@@ -378,8 +378,8 @@ export function BlogEditor({ params }: { params?: { id?: string } }) {
             <label className="text-sm font-semibold text-slate-700">Cover Image URL</label>
             <input type="text" value={formData.coverImageUrl} onChange={(e) => setFormData({ ...formData, coverImageUrl: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://" />
             {formData.coverImageUrl && (
-              <div className="mt-2 h-40 bg-slate-100 rounded-lg overflow-hidden border">
-                <img src={getGoogleDriveImageUrl(formData.coverImageUrl)} alt="Cover Preview" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <div className="mt-2 aspect-video w-full rounded-xl overflow-hidden border bg-slate-100">
+                <img src={getGoogleDriveImageUrl(formData.coverImageUrl)} alt="Cover Preview" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               </div>
             )}
           </div>
