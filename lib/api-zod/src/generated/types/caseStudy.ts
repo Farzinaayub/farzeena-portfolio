@@ -19,6 +19,7 @@ export interface CaseStudy {
   featured?: boolean;
   sortOrder?: number;
   documentUrl?: string;
+  dashboardUrl?: string;
   metaTitle?: string;
   metaDescription?: string;
   createdAt?: string;

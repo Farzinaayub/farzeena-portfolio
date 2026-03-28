@@ -33,11 +33,6 @@ export default function Blogs() {
                     {blog.readingTime || 5} min read
                   </div>
                 </div>
-                <div className="flex gap-2 mb-3">
-                  {blog.tags?.slice(0,3).map(tag => (
-                    <span key={tag} className="text-xs font-bold text-primary uppercase tracking-wider">{tag}</span>
-                  ))}
-                </div>
                 <h3 className="text-2xl font-bold text-navy mb-3 group-hover:text-primary transition-colors line-clamp-2">{blog.title}</h3>
                 <p className="text-muted-foreground line-clamp-3 mb-6 flex-1">{blog.shortDescription}</p>
                 <div className="mt-auto flex items-center text-primary font-bold">

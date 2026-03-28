@@ -236,12 +236,15 @@ export function AboutEditor() {
               <textarea rows={5} value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 resize-none" />
             </div>
             <div>
-              <label className="text-sm font-semibold text-slate-700">Profile Image URL</label>
-              <input type="text" value={formData.profileImageUrl} onChange={e => setFormData({...formData, profileImageUrl: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
-              {formData.profileImageUrl && (
-                <div className="mt-2 w-32 h-32 bg-slate-100 rounded-xl overflow-hidden border">
-                  <img src={getGoogleDriveImageUrl(formData.profileImageUrl)} alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <label className="text-sm font-semibold text-slate-700">Profile Photo</label>
+              <p className="text-xs text-muted-foreground mb-1.5">Paste a Google Drive image URL (right-click image → Copy link) or any direct image URL. This appears in the About section on the homepage.</p>
+              <input type="text" value={formData.profileImageUrl} onChange={e => setFormData({...formData, profileImageUrl: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" placeholder="https://drive.google.com/file/d/..." />
+              {formData.profileImageUrl ? (
+                <div className="mt-3 w-36 h-36 bg-slate-100 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-sm">
+                  <img src={getGoogleDriveImageUrl(formData.profileImageUrl)} alt="Profile preview" className="w-full h-full object-cover object-top" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 </div>
+              ) : (
+                <p className="mt-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">No photo set — a default illustration is shown on the site.</p>
               )}
             </div>
           </div>

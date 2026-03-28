@@ -11,6 +11,7 @@ export interface ICaseStudy extends Document {
   featured: boolean;
   sortOrder: number;
   documentUrl?: string;
+  dashboardUrl?: string;
   metaTitle?: string;
   metaDescription?: string;
   createdAt: Date;
@@ -29,6 +30,7 @@ const CaseStudySchema = new Schema<ICaseStudy>(
     featured: { type: Boolean, default: false },
     sortOrder: { type: Number, default: 0 },
     documentUrl: String,
+    dashboardUrl: String,
     metaTitle: String,
     metaDescription: String,
   },

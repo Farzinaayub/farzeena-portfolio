@@ -4,7 +4,7 @@ import {
 } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, ChevronRight, FileText, Play, Database, Server, BarChart3, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ChevronRight, FileText, Database, Server, BarChart3, CheckCircle2, ExternalLink, BookOpen, Linkedin, Send, X } from "lucide-react";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -33,7 +33,7 @@ export default function Home() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                Data & Analytics Engineering
+                Data Analytics & Business Intelligence
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] mb-6 tracking-tight">
                 {hero?.heading || "Analytics Engineering for Data-Driven Decision Making"}
@@ -144,9 +144,23 @@ export default function Home() {
                     {(cs.tools?.length || 0) > 3 && <span className="px-2 py-1 text-xs text-slate-400">+{cs.tools!.length - 3}</span>}
                   </div>
                   
-                  <Link href={`/case-studies/${cs.slug}`} className="w-full py-2.5 rounded-lg bg-slate-50 text-slate-700 text-sm font-semibold hover:bg-primary hover:text-white transition-colors text-center">
-                    Read Case Study
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    <Link href={`/case-studies/${cs.slug}`} className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors text-center">
+                      Read Case Study
+                    </Link>
+                    <div className="flex gap-2">
+                      {(cs as any).documentUrl && (
+                        <a href={(cs as any).documentUrl} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} className="flex-1 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-semibold hover:bg-blue-50 hover:text-primary border border-slate-200 transition-colors text-center flex items-center justify-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5" /> View Doc
+                        </a>
+                      )}
+                      {(cs as any).dashboardUrl && (
+                        <a href={(cs as any).dashboardUrl} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} className="flex-1 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-semibold hover:bg-green-50 hover:text-green-700 border border-slate-200 transition-colors text-center flex items-center justify-center gap-1.5">
+                          <ExternalLink className="w-3.5 h-3.5" /> Live Dashboard
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -284,13 +298,13 @@ export default function Home() {
 
       {/* 6. CONTACT SECTION */}
       <section className="py-24" id="contact">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="text-center mb-12">
-             <h2 className="text-3xl font-bold text-navy mb-4">Get in Touch</h2>
-             <p className="text-muted-foreground">Looking for an analytics engineer to help with your data infrastructure? Send me a message.</p>
-           </div>
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-navy mb-4">Let's Connect</h2>
+          <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
+            Interested in working together or just want to say hello? Reach out — I'd love to hear from you.
+          </p>
 
-           <ContactForm />
+          <ContactSection linkedinUrl={settings?.linkedinUrl} />
         </div>
       </section>
 
@@ -298,72 +312,130 @@ export default function Home() {
   );
 }
 
-function ContactForm() {
+function ContactSection({ linkedinUrl }: { linkedinUrl?: string }) {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({ name: '', email: '', message: '', projectType: [] as string[] });
-  
+  const [open, setOpen] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
   const { mutate: submit, isPending } = useSubmitContact({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Message Sent!", description: "I'll get back to you as soon as possible." });
-        setFormData({ name: '', email: '', message: '', projectType: [] });
+        setSent(true);
+        setFormData({ name: '', email: '', message: '' });
+        toast({ title: "Note sent!", description: "I'll get back to you soon." });
       },
       onError: () => {
-        toast({ variant: "destructive", title: "Error", description: "Failed to send message. Please try again." });
+        toast({ variant: "destructive", title: "Error", description: "Failed to send. Please try again." });
       }
     }
   });
 
-  const handleToggleType = (type: string) => {
-    setFormData(prev => ({
-      ...prev,
-      projectType: prev.projectType.includes(type) 
-        ? prev.projectType.filter(t => t !== type)
-        : [...prev.projectType, type]
-    }));
-  };
-
-  const types = ["Data Pipeline", "Dashboard/BI", "Data Modeling", "Consulting"];
-
   return (
-    <div className="bg-white rounded-2xl p-8 border shadow-lg shadow-black/5">
-      <form onSubmit={(e) => { e.preventDefault(); submit({ data: formData }); }} className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Name</label>
-            <input required type="text" value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-slate-50 border-border border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="John Doe" />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Email</label>
-            <input required type="email" value={formData.email} onChange={e=>setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-slate-50 border-border border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="john@company.com" />
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Primary actions */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        {linkedinUrl && (
+          <a
+            href={linkedinUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-[#0A66C2] text-white font-bold text-base shadow-lg shadow-blue-900/20 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+          >
+            <Linkedin className="w-5 h-5" /> Connect on LinkedIn
+          </a>
+        )}
+        {!open && !sent && (
+          <button
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-white text-slate-700 font-bold text-base border border-slate-200 shadow-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all"
+          >
+            <Send className="w-4 h-4" /> Get in Touch
+          </button>
+        )}
+      </div>
 
-        <div className="space-y-3">
-          <label className="text-sm font-semibold text-slate-700">What do you need help with?</label>
-          <div className="flex flex-wrap gap-3">
-            {types.map(t => (
-              <button 
-                type="button" 
-                key={t}
-                onClick={() => handleToggleType(t)}
-                className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${formData.projectType.includes(t) ? 'bg-primary/10 border-primary text-primary' : 'bg-slate-50 border-border text-slate-600 hover:border-slate-300'}`}
-              >
-                {t}
-              </button>
-            ))}
+      {/* Expandable note form */}
+      {open && !sent && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl p-8 border shadow-lg shadow-black/5 text-left"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-lg text-navy">Send a Note</h3>
+            <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-500">
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-700">Message</label>
-          <textarea required rows={5} value={formData.message} onChange={e=>setFormData({...formData, message: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-slate-50 border-border border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none" placeholder="Tell me about your project..."></textarea>
-        </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit({ data: { ...formData, projectType: [] } });
+            }}
+            className="space-y-5"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700">Name <span className="text-red-400">*</span></label>
+                <input
+                  required
+                  type="text"
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                  placeholder="Your name"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700">Email <span className="text-red-400">*</span></label>
+                <input
+                  required
+                  type="email"
+                  value={formData.email}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                  placeholder="you@company.com"
+                />
+              </div>
+            </div>
 
-        <button disabled={isPending} type="submit" className="w-full py-4 rounded-xl bg-primary text-white font-bold text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-          {isPending ? "Sending..." : "Send Message"}
-        </button>
-      </form>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700">Message <span className="text-slate-400 font-normal text-xs">(optional)</span></label>
+              <textarea
+                rows={4}
+                value={formData.message}
+                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
+                placeholder="Tell me what's on your mind…"
+              />
+            </div>
+
+            <button
+              disabled={isPending}
+              type="submit"
+              className="w-full py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isPending ? "Sending…" : <><Send className="w-4 h-4" /> Send Note</>}
+            </button>
+          </form>
+        </motion.div>
+      )}
+
+      {sent && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center"
+        >
+          <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-6 h-6 text-green-600" />
+          </div>
+          <p className="font-bold text-green-800 text-lg">Message received!</p>
+          <p className="text-green-700 text-sm mt-1">I'll get back to you as soon as possible.</p>
+        </motion.div>
+      )}
     </div>
-  )
+  );
 }

@@ -105,6 +105,7 @@ export function CaseStudyEditor({ params }: { params?: { id?: string } }) {
     featured: false,
     sortOrder: 0,
     documentUrl: "",
+    dashboardUrl: "",
     metaTitle: "",
     metaDescription: "",
   });
@@ -122,6 +123,7 @@ export function CaseStudyEditor({ params }: { params?: { id?: string } }) {
         featured: existingCaseStudy.featured || false,
         sortOrder: existingCaseStudy.sortOrder || 0,
         documentUrl: existingCaseStudy.documentUrl || "",
+        dashboardUrl: (existingCaseStudy as any).dashboardUrl || "",
         metaTitle: existingCaseStudy.metaTitle || "",
         metaDescription: existingCaseStudy.metaDescription || "",
       });
@@ -219,9 +221,17 @@ export function CaseStudyEditor({ params }: { params?: { id?: string } }) {
             <label htmlFor="featured" className="text-sm font-semibold text-slate-700">Featured Case Study</label>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Document / External URL</label>
-            <input type="text" value={formData.documentUrl} onChange={(e) => setFormData({ ...formData, documentUrl: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Optional external link" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Documentation URL</label>
+              <p className="text-xs text-muted-foreground">Link to Google Doc with detailed project documentation + template download</p>
+              <input type="text" value={formData.documentUrl} onChange={(e) => setFormData({ ...formData, documentUrl: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://docs.google.com/..." />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Live Dashboard URL</label>
+              <p className="text-xs text-muted-foreground">Link to published Tableau / Power BI / Looker dashboard</p>
+              <input type="text" value={(formData as any).dashboardUrl} onChange={(e) => setFormData({ ...formData, dashboardUrl: e.target.value } as any)} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://app.powerbi.com/..." />
+            </div>
           </div>
         </div>
 
