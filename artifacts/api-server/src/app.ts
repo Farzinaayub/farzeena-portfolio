@@ -8,6 +8,8 @@ import { toNodeHandler } from "better-auth/node";
 
 const app: Express = express();
 
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: true,

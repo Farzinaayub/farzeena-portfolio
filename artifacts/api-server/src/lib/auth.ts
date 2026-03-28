@@ -14,6 +14,14 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET || "fallback-secret-change-in-prod",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   database: mongodbAdapter(client.db(dbName)),
+  session: {
+    expiresIn: 60 * 60 * 24 * 30,    // 30 days
+    updateAge: 60 * 60 * 24,          // Refresh session if accessed after 24h
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 10,                // Cache session in cookie for 10 min (avoids DB hit every request)
+    },
+  },
   plugins: [
     emailOTP({
       disableSignUp: true,
