@@ -23,8 +23,6 @@ export function HeroEditor() {
 
   const [formData, setFormData] = useState<HeroSectionInput>({
     badgeText: "",
-    introText: "",
-    subtitle: "",
     cta1Text: "",
     cta1Link: "",
     cta2Text: "",
@@ -36,8 +34,6 @@ export function HeroEditor() {
     if (existing) {
       setFormData({
         badgeText: existing.badgeText || "",
-        introText: existing.introText || "",
-        subtitle: existing.subtitle || "",
         cta1Text: existing.cta1Text || "",
         cta1Link: existing.cta1Link || "",
         cta2Text: existing.cta2Text || "",
@@ -60,19 +56,11 @@ export function HeroEditor() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* Badge + Intro */}
-        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-4">
-          <h3 className="font-bold text-base text-navy">Top Labels</h3>
-          <div>
-            <label className="text-sm font-semibold text-slate-700">Badge Text</label>
-            <p className="text-xs text-slate-400 mb-1.5">Small pill shown above the headline, e.g. "Analytics Engineer · Data & BI"</p>
-            <input type="text" value={formData.badgeText} onChange={e => setFormData({...formData, badgeText: e.target.value})} placeholder="Analytics Engineer · Data & Business Intelligence" className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm" />
-          </div>
-          <div>
-            <label className="text-sm font-semibold text-slate-700">Intro Line</label>
-            <p className="text-xs text-slate-400 mb-1.5">Static line above the typewriter heading, e.g. "Hi, I'm Farzeena — I help data teams"</p>
-            <input type="text" value={formData.introText} onChange={e => setFormData({...formData, introText: e.target.value})} placeholder="Hi, I'm Farzeena — I help data teams" className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm" />
-          </div>
+        {/* Badge */}
+        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-3">
+          <h3 className="font-bold text-base text-navy">Badge Text</h3>
+          <p className="text-xs text-slate-400">Small pill shown above the headline, e.g. "Analytics Engineer · Data & BI"</p>
+          <input type="text" value={formData.badgeText} onChange={e => setFormData({...formData, badgeText: e.target.value})} placeholder="Analytics Engineer · Data & Business Intelligence" className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm" />
         </div>
 
         {/* Typewriter Headlines */}
@@ -114,13 +102,6 @@ export function HeroEditor() {
               <p className="text-slate-400 text-sm italic py-2">No headlines yet — add some above, or built-in defaults will be used.</p>
             )}
           </div>
-        </div>
-
-        {/* Subtitle */}
-        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-4">
-          <h3 className="font-bold text-base text-navy">Subtitle</h3>
-          <p className="text-xs text-slate-400 -mt-2">Short paragraph shown below the headline.</p>
-          <textarea rows={3} value={formData.subtitle} onChange={e => setFormData({...formData, subtitle: e.target.value})} placeholder="Transforming complex raw data into clean, reliable, and actionable insights..." className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 resize-none text-sm" />
         </div>
 
         {/* CTAs */}

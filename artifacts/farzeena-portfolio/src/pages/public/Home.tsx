@@ -57,7 +57,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen relative">
 
       {/* 1. HERO — Carousel */}
-      <section className="relative pt-14 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+      <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-20 overflow-hidden">
         {/* Subtle radial accent */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div className="w-[600px] h-[400px] rounded-full bg-primary/5 blur-3xl" />
@@ -70,18 +70,13 @@ export default function Home() {
             transition={{ duration: 0.55 }}
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6 border border-primary/15">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-5 border border-primary/15">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               {hero?.badgeText || "Analytics Engineer · Data & Business Intelligence"}
             </div>
 
-            {/* Static intro */}
-            <p className="text-base sm:text-lg text-slate-500 font-medium mb-4 tracking-wide uppercase">
-              {hero?.introText || "Hi, I'm Farzeena — I help data teams"}
-            </p>
-
             {/* Vertical sliding headline carousel */}
-            <div className="min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center mb-10 overflow-hidden">
+            <div className="min-h-[90px] sm:min-h-[110px] lg:min-h-[130px] flex items-center justify-center mb-8 overflow-hidden">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.h1
                   key={slideIdx}
@@ -95,11 +90,6 @@ export default function Home() {
                 </motion.h1>
               </AnimatePresence>
             </div>
-
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">
-              {hero?.subtitle || "Transforming complex raw data into clean, reliable, and actionable insights to scale your business intelligence."}
-            </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -121,7 +111,7 @@ export default function Home() {
       </section>
 
       {/* 2. DATA PIPELINE ARCHITECTURE SECTION */}
-      <section className="py-14 bg-slate-900 relative overflow-hidden">
+      <section className="py-12 bg-slate-900 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-blue-400 blur-3xl"></div>
@@ -169,7 +159,7 @@ export default function Home() {
 
       {/* 3. CASE STUDIES CAROUSEL */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 flex items-end justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 flex items-end justify-between">
           <div>
             <h2 className="text-3xl font-bold text-navy mb-4">Featured Case Studies</h2>
             <p className="text-muted-foreground max-w-2xl">Deep dives into complex data problems and the engineering solutions that solved them.</p>
@@ -233,9 +223,9 @@ export default function Home() {
       </section>
 
       {/* 4. BLOGS GRID */}
-      <section className="py-16">
+      <section className="py-16 bg-slate-50/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl font-bold text-navy mb-4">Analytics Insights</h2>
             <p className="text-muted-foreground">Articles, tutorials, and thoughts on data engineering, analytics workflows, and business intelligence.</p>
           </div>
@@ -270,7 +260,7 @@ export default function Home() {
       </section>
 
       {/* 5. ABOUT ME */}
-      <section className="py-16" id="about">
+      <section className="py-20" id="about">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1">
