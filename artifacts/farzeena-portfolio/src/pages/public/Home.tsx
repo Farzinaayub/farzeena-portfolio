@@ -53,12 +53,6 @@ export default function Home() {
                 >
                   {hero?.cta1Text || "View Case Studies"} <ArrowRight className="w-4 h-4" />
                 </Link>
-                <Link 
-                  href={hero?.cta2Link || "/about"}
-                  className="px-8 py-4 rounded-xl bg-white border-2 border-border text-foreground font-semibold hover:border-primary/50 hover:bg-slate-50 transition-all text-center flex items-center justify-center gap-2"
-                >
-                  {hero?.cta2Text || "About Me"}
-                </Link>
               </div>
             </motion.div>
 
