@@ -3,7 +3,7 @@ import {
   useGetAboutSection, useGetSiteSettings, useSubmitContact 
 } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronRight, FileText, Database, Server, BarChart3, CheckCircle2, ExternalLink, BookOpen, Linkedin, Send, X, LineChart, Layers } from "lucide-react";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
@@ -38,40 +38,18 @@ export default function Home() {
   const { data: about } = useGetAboutSection();
   const { data: settings } = useGetSiteSettings();
 
-  // Typewriter effect — cycles through headlines
+  // Vertical sliding carousel — cycles through headlines
   const headlines = hero?.pipelineSteps?.length
     ? hero.pipelineSteps.map(s => s.label).filter(Boolean)
     : DEFAULT_HEADLINES;
 
-  const [displayed, setDisplayed] = useState("");
-  const [phraseIdx, setPhraseIdx] = useState(0);
-  const [typing, setTyping] = useState(true);
-  const [paused, setPaused] = useState(false);
+  const [slideIdx, setSlideIdx] = useState(0);
 
   useEffect(() => {
-    const current = headlines[phraseIdx] ?? "";
-
-    if (paused) {
-      const t = setTimeout(() => { setTyping(false); setPaused(false); }, 2200);
-      return () => clearTimeout(t);
-    }
-    if (typing) {
-      if (displayed.length < current.length) {
-        const t = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 42);
-        return () => clearTimeout(t);
-      } else {
-        setPaused(true);
-      }
-    } else {
-      if (displayed.length > 0) {
-        const t = setTimeout(() => setDisplayed(d => d.slice(0, -1)), 22);
-        return () => clearTimeout(t);
-      } else {
-        setPhraseIdx(i => (i + 1) % headlines.length);
-        setTyping(true);
-      }
-    }
-  }, [displayed, typing, paused, phraseIdx, headlines]);
+    if (headlines.length <= 1) return;
+    const t = setInterval(() => setSlideIdx(i => (i + 1) % headlines.length), 3800);
+    return () => clearInterval(t);
+  }, [headlines.length]);
 
   const pipelineSteps = PIPELINE_DEFAULTS;
 
@@ -102,12 +80,20 @@ export default function Home() {
               {hero?.introText || "Hi, I'm Farzeena — I help data teams"}
             </p>
 
-            {/* Typewriter headline */}
-            <div className="min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center mb-10">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] tracking-tight">
-                {displayed}
-                <span className="inline-block w-[3px] h-[1em] ml-1 bg-primary align-middle animate-pulse rounded-sm" />
-              </h1>
+            {/* Vertical sliding headline carousel */}
+            <div className="min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center mb-10 overflow-hidden">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.h1
+                  key={slideIdx}
+                  initial={{ y: 56, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -56, opacity: 0 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] tracking-tight"
+                >
+                  {headlines[slideIdx]}
+                </motion.h1>
+              </AnimatePresence>
             </div>
 
             {/* Subtitle */}
