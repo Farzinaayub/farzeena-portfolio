@@ -94,12 +94,12 @@ export default function Home() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6 border border-primary/15">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Analytics Engineer · Data &amp; Business Intelligence
+              {hero?.badgeText || "Analytics Engineer · Data & Business Intelligence"}
             </div>
 
             {/* Static intro */}
             <p className="text-base sm:text-lg text-slate-500 font-medium mb-4 tracking-wide uppercase">
-              Hi, I'm Farzeena — I help data teams
+              {hero?.introText || "Hi, I'm Farzeena — I help data teams"}
             </p>
 
             {/* Typewriter headline */}
@@ -127,7 +127,7 @@ export default function Home() {
                 onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-8 py-4 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 shadow-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all text-base"
               >
-                About Me
+                {hero?.cta2Text || "About Me"}
               </button>
             </div>
           </motion.div>

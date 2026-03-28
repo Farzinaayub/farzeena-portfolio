@@ -22,12 +22,12 @@ export function HeroEditor() {
   });
 
   const [formData, setFormData] = useState<HeroSectionInput>({
-    heading: "",
+    badgeText: "",
+    introText: "",
     subtitle: "",
     cta1Text: "",
     cta1Link: "",
     cta2Text: "",
-    cta2Link: "",
     pipelineSteps: [],
     toolIcons: [],
   });
@@ -35,12 +35,12 @@ export function HeroEditor() {
   useEffect(() => {
     if (existing) {
       setFormData({
-        heading: existing.heading || "",
+        badgeText: existing.badgeText || "",
+        introText: existing.introText || "",
         subtitle: existing.subtitle || "",
         cta1Text: existing.cta1Text || "",
         cta1Link: existing.cta1Link || "",
         cta2Text: existing.cta2Text || "",
-        cta2Link: existing.cta2Link || "",
         pipelineSteps: existing.pipelineSteps || [],
         toolIcons: [],
       });
@@ -57,68 +57,46 @@ export function HeroEditor() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       <h1 className="text-2xl font-bold text-navy mb-6">Edit Hero Section</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Heading</label>
-              <input required type="text" value={formData.heading} onChange={e => setFormData({...formData, heading: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
-            </div>
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Subtitle</label>
-              <textarea rows={3} value={formData.subtitle} onChange={e => setFormData({...formData, subtitle: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 resize-none" />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4 border p-4 rounded-xl bg-slate-50">
-                <h4 className="font-semibold text-slate-800">Primary CTA</h4>
-                <div>
-                  <label className="text-xs font-semibold text-slate-600">Text</label>
-                  <input type="text" value={formData.cta1Text} onChange={e => setFormData({...formData, cta1Text: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-slate-600">Link</label>
-                  <input type="text" value={formData.cta1Link} onChange={e => setFormData({...formData, cta1Link: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
-                </div>
-              </div>
-              <div className="space-y-4 border p-4 rounded-xl bg-slate-50">
-                <h4 className="font-semibold text-slate-800">Secondary CTA</h4>
-                <div>
-                  <label className="text-xs font-semibold text-slate-600">Text</label>
-                  <input type="text" value={formData.cta2Text} onChange={e => setFormData({...formData, cta2Text: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-slate-600">Link</label>
-                  <input type="text" value={formData.cta2Link} onChange={e => setFormData({...formData, cta2Link: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
-                </div>
-              </div>
-            </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+
+        {/* Badge + Intro */}
+        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-4">
+          <h3 className="font-bold text-base text-navy">Top Labels</h3>
+          <div>
+            <label className="text-sm font-semibold text-slate-700">Badge Text</label>
+            <p className="text-xs text-slate-400 mb-1.5">Small pill shown above the headline, e.g. "Analytics Engineer · Data & BI"</p>
+            <input type="text" value={formData.badgeText} onChange={e => setFormData({...formData, badgeText: e.target.value})} placeholder="Analytics Engineer · Data & Business Intelligence" className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-slate-700">Intro Line</label>
+            <p className="text-xs text-slate-400 mb-1.5">Static line above the typewriter heading, e.g. "Hi, I'm Farzeena — I help data teams"</p>
+            <input type="text" value={formData.introText} onChange={e => setFormData({...formData, introText: e.target.value})} placeholder="Hi, I'm Farzeena — I help data teams" className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm" />
           </div>
         </div>
 
+        {/* Typewriter Headlines */}
         <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-5">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="font-bold text-lg text-navy">Hero Carousel Headlines</h3>
-              <p className="text-xs text-slate-500 mt-0.5">These rotate as the big headline in the hero section. Add up to 6 statements.</p>
+              <h3 className="font-bold text-base text-navy">Typewriter Headlines</h3>
+              <p className="text-xs text-slate-400 mt-0.5">These type out one after another as the big headline. Add up to 6.</p>
             </div>
             <button
               type="button"
               onClick={() => setFormData(p => ({ ...p, pipelineSteps: [...(p.pipelineSteps||[]), { label: '', iconName: '', order: (p.pipelineSteps?.length||0) }] }))}
               className="px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-lg font-semibold flex items-center gap-1"
             >
-              <Plus className="w-4 h-4" /> Add Line
+              <Plus className="w-4 h-4" /> Add Headline
             </button>
           </div>
-
           <div className="space-y-3">
             {formData.pipelineSteps?.map((step, idx) => (
               <div key={idx} className="flex gap-3 items-center">
                 <span className="text-slate-400 text-sm font-mono w-5 shrink-0 text-right">{idx + 1}.</span>
                 <input
                   type="text"
-                  placeholder={`e.g. "Building BI dashboards that drive decisions"`}
+                  placeholder={`e.g. "Analytics Engineering for Data-Driven Decisions"`}
                   value={step.label}
                   onChange={e => {
                     const newSteps = [...(formData.pipelineSteps||[])];
@@ -127,21 +105,47 @@ export function HeroEditor() {
                   }}
                   className="flex-1 px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 text-sm"
                 />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const newSteps = formData.pipelineSteps?.filter((_, i) => i !== idx);
-                    setFormData({...formData, pipelineSteps: newSteps});
-                  }}
-                  className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors"
-                >
+                <button type="button" onClick={() => setFormData({...formData, pipelineSteps: formData.pipelineSteps?.filter((_, i) => i !== idx)})} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
             {(!formData.pipelineSteps || formData.pipelineSteps.length === 0) && (
-              <p className="text-slate-400 text-sm italic py-2">No taglines yet — add some above, or defaults will be used.</p>
+              <p className="text-slate-400 text-sm italic py-2">No headlines yet — add some above, or built-in defaults will be used.</p>
             )}
+          </div>
+        </div>
+
+        {/* Subtitle */}
+        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-4">
+          <h3 className="font-bold text-base text-navy">Subtitle</h3>
+          <p className="text-xs text-slate-400 -mt-2">Short paragraph shown below the headline.</p>
+          <textarea rows={3} value={formData.subtitle} onChange={e => setFormData({...formData, subtitle: e.target.value})} placeholder="Transforming complex raw data into clean, reliable, and actionable insights..." className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-primary/20 resize-none text-sm" />
+        </div>
+
+        {/* CTAs */}
+        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-4">
+          <h3 className="font-bold text-base text-navy">Buttons</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3 border p-4 rounded-xl bg-slate-50">
+              <h4 className="font-semibold text-sm text-slate-800">Primary Button</h4>
+              <div>
+                <label className="text-xs font-semibold text-slate-600">Label</label>
+                <input type="text" value={formData.cta1Text} onChange={e => setFormData({...formData, cta1Text: e.target.value})} placeholder="View Case Studies" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 text-sm mt-1" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-600">Link</label>
+                <input type="text" value={formData.cta1Link} onChange={e => setFormData({...formData, cta1Link: e.target.value})} placeholder="/case-studies" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 text-sm mt-1" />
+              </div>
+            </div>
+            <div className="space-y-3 border p-4 rounded-xl bg-slate-50">
+              <h4 className="font-semibold text-sm text-slate-800">"About Me" Button Label</h4>
+              <p className="text-xs text-slate-400">Always scrolls to the About section.</p>
+              <div>
+                <label className="text-xs font-semibold text-slate-600">Label</label>
+                <input type="text" value={formData.cta2Text} onChange={e => setFormData({...formData, cta2Text: e.target.value})} placeholder="About Me" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 text-sm mt-1" />
+              </div>
+            </div>
           </div>
         </div>
 

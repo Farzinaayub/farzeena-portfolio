@@ -8,28 +8,30 @@ router.get("/", async (_req, res) => {
   try {
     await connectMongoose();
     let hero = await HeroSection.findOne();
+    if (hero) {
+      let needsSave = false;
+      if (!hero.badgeText) { hero.badgeText = "Analytics Engineer · Data & Business Intelligence"; needsSave = true; }
+      if (!hero.introText) { hero.introText = "Hi, I'm Farzeena — I help data teams"; needsSave = true; }
+      if (!hero.cta2Text || hero.cta2Text === "Explore Solutions") { hero.cta2Text = "About Me"; needsSave = true; }
+      if (needsSave) await hero.save();
+    }
     if (!hero) {
       hero = await HeroSection.create({
-        heading: "Analytics Engineering for Data-Driven Decision Making",
+        heading: "",
+        badgeText: "Analytics Engineer · Data & Business Intelligence",
+        introText: "Hi, I'm Farzeena — I help data teams",
         subtitle:
           "Designing data pipelines, analytics models, and dashboards to transform raw data into business insights.",
         cta1Text: "View Case Studies",
         cta1Link: "/case-studies",
-        cta2Text: "Explore Solutions",
-        cta2Link: "/about",
+        cta2Text: "About Me",
         pipelineSteps: [
-          { label: "Data Sources", iconName: "Database", order: 0 },
-          { label: "Python ETL", iconName: "Code", order: 1 },
-          { label: "Data Warehouse", iconName: "Server", order: 2 },
-          { label: "Dashboard", iconName: "BarChart2", order: 3 },
+          { label: "Analytics Engineering for Data-Driven Decisions", iconName: "", order: 0 },
+          { label: "Transforming Raw Data into Business Intelligence", iconName: "", order: 1 },
+          { label: "Building Scalable Pipelines & BI Dashboards", iconName: "", order: 2 },
+          { label: "Helping Teams Make Confident Data-Backed Decisions", iconName: "", order: 3 },
         ],
-        toolIcons: [
-          { name: "dbt", iconUrl: "", order: 0 },
-          { name: "Python", iconUrl: "", order: 1 },
-          { name: "Power BI", iconUrl: "", order: 2 },
-          { name: "Google Cloud", iconUrl: "", order: 3 },
-          { name: "AWS", iconUrl: "", order: 4 },
-        ],
+        toolIcons: [],
       });
     }
     res.json(hero);

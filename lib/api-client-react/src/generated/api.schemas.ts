@@ -147,24 +147,26 @@ export interface BlogInput {
 }
 
 export interface HeroSection {
-  heading: string;
+  heading?: string;
+  badgeText?: string;
+  introText?: string;
   subtitle?: string;
   cta1Text?: string;
   cta1Link?: string;
   cta2Text?: string;
-  cta2Link?: string;
   pipelineSteps?: PipelineStep[];
   toolIcons?: ToolIcon[];
   updatedAt?: string;
 }
 
 export interface HeroSectionInput {
-  heading: string;
+  heading?: string;
+  badgeText?: string;
+  introText?: string;
   subtitle?: string;
   cta1Text?: string;
   cta1Link?: string;
   cta2Text?: string;
-  cta2Link?: string;
   pipelineSteps?: PipelineStep[];
   toolIcons?: ToolIcon[];
 }
