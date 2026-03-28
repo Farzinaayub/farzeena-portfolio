@@ -21,11 +21,10 @@ router.post("/", async (req, res) => {
     await ContactSubmission.create({ name, email, projectType, message: message || "" });
 
     const adminEmail = process.env.ADMIN_EMAIL;
-    console.log(`📬 Contact form: name=${name}, email=${email}, adminEmail=${adminEmail}, hasResendKey=${!!process.env.RESEND_API_KEY}`);
     if (adminEmail && process.env.RESEND_API_KEY) {
       try {
         const result = await resend.emails.send({
-          from: "Portfolio Contact <onboarding@resend.dev>",
+          from: "Farzeena Portfolio <noreply@farzeena.com>",
           to: adminEmail,
           subject: `New message from ${name}`,
           html: `
@@ -53,9 +52,11 @@ router.post("/", async (req, res) => {
             </div>
           `,
         });
-        console.log(`✅ Resend result:`, JSON.stringify(result));
+        if (result.error) {
+          console.error("Resend delivery error:", result.error.message);
+        }
       } catch (emailErr: any) {
-        console.error("❌ Resend error:", emailErr?.message || emailErr);
+        console.error("Resend exception:", emailErr?.message || emailErr);
       }
     }
 
