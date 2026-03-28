@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useGetSiteSettings } from "@workspace/api-client-react";
-import { Menu, X, Github, Linkedin, Twitter } from "lucide-react";
+import { Menu, X, Github, Linkedin } from "lucide-react";
 import analyticsLogo from "@/assets/analytics-logo.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
@@ -194,21 +194,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </span>
             </div>
             <div className="flex items-center gap-4">
-              {settings?.linkedinUrl && (
-                <a href={settings.linkedinUrl} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-                  <Linkedin className="w-4 h-4" />
-                </a>
-              )}
-              {settings?.githubUrl && (
-                <a href={settings.githubUrl} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-                  <Github className="w-4 h-4" />
-                </a>
-              )}
-              {settings?.twitterUrl && (
-                <a href={settings.twitterUrl} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-                  <Twitter className="w-4 h-4" />
-                </a>
-              )}
+              <a href={settings?.linkedinUrl || "https://www.linkedin.com/in/farzeena-ayub/"} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                <Linkedin className="w-4 h-4" />
+              </a>
+              <a href={settings?.githubUrl || "https://github.com/Farzinaayub"} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                <Github className="w-4 h-4" />
+              </a>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">

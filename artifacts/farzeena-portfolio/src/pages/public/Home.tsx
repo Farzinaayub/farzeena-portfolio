@@ -20,7 +20,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen relative">
 
       {/* 1. HERO SECTION */}
-      <section className="relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-hidden">
+      <section className="relative pt-10 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -112,7 +112,7 @@ export default function Home() {
       </section>
 
       {/* 2. CASE STUDIES CAROUSEL */}
-      <section className="py-24">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 flex items-end justify-between">
           <div>
             <h2 className="text-3xl font-bold text-navy mb-4">Featured Case Studies</h2>
@@ -177,9 +177,9 @@ export default function Home() {
       </section>
 
       {/* 3. BLOGS GRID */}
-      <section className="py-24">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-3xl font-bold text-navy mb-4">Analytics Insights</h2>
             <p className="text-muted-foreground">Articles, tutorials, and thoughts on data engineering, analytics workflows, and business intelligence.</p>
           </div>
@@ -187,7 +187,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogs?.slice(0,3).map((blog) => (
               <Link key={blog._id} href={`/blogs/${blog.slug}`} className="group flex flex-col">
-                <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-slate-200 relative flex items-center justify-center">
+                <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-5 bg-slate-200 relative flex items-center justify-center">
                   <FileText className="w-12 h-12 text-slate-400" />
                   {blog.coverImageUrl && (
                     <img src={getGoogleDriveImageUrl(blog.coverImageUrl)} alt={blog.title} className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
@@ -196,13 +196,8 @@ export default function Home() {
                     {blog.readingTime || 5} min read
                   </div>
                 </div>
-                <div className="flex gap-2 mb-3">
-                  {blog.tags?.slice(0,2).map(tag => (
-                    <span key={tag} className="text-xs font-bold text-primary uppercase tracking-wider">{tag}</span>
-                  ))}
-                </div>
-                <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-primary transition-colors line-clamp-2">{blog.title}</h3>
-                <p className="text-muted-foreground line-clamp-2 mb-4">{blog.shortDescription}</p>
+                <h3 className="text-xl font-bold text-navy mb-2 group-hover:text-primary transition-colors line-clamp-2">{blog.title}</h3>
+                <p className="text-muted-foreground line-clamp-2 mb-4 text-sm">{blog.shortDescription}</p>
                 <div className="mt-auto flex items-center text-primary font-semibold text-sm">
                   Read Article <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -218,26 +213,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CTA BANNER */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16 relative overflow-hidden">
-         {/* Decorative circles */}
-         <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full border-[20px] border-white/10"></div>
-         <div className="absolute -bottom-12 -left-12 w-32 h-32 rounded-full border-[10px] border-white/10"></div>
-         
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-              <h2 className="text-3xl md:text-4xl font-bold text-white max-w-2xl leading-tight">
-                {settings?.ctaBannerText || "Ready to build scalable data models and unlock insights?"}
-              </h2>
-              <Link href="/contact" className="shrink-0 px-8 py-4 rounded-xl bg-white text-primary font-bold text-lg hover:shadow-xl hover:scale-105 transition-all">
-                Let's Talk Data
-              </Link>
-            </div>
-         </div>
-      </section>
-
       {/* 5. ABOUT ME */}
-      <section className="py-24" id="about">
+      <section className="py-16" id="about">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1">
@@ -297,14 +274,14 @@ export default function Home() {
       </section>
 
       {/* 6. CONTACT SECTION */}
-      <section className="py-24" id="contact">
+      <section className="py-16" id="contact">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-navy mb-4">Let's Connect</h2>
           <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
             Interested in working together or just want to say hello? Reach out — I'd love to hear from you.
           </p>
 
-          <ContactSection linkedinUrl={settings?.linkedinUrl} />
+          <ContactSection linkedinUrl={settings?.linkedinUrl || "https://www.linkedin.com/in/farzeena-ayub/"} />
         </div>
       </section>
 

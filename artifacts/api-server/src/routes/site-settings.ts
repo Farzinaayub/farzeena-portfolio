@@ -13,9 +13,9 @@ router.get("/", async (_req, res) => {
         siteTitle: "Farzeena — Analytics Engineer",
         ctaBannerText: "Testing Analytics Insights",
         footerText: "© 2025 Farzeena. All rights reserved.",
-        linkedinUrl: "https://linkedin.com",
-        githubUrl: "https://github.com",
-        twitterUrl: "https://twitter.com",
+        linkedinUrl: "https://www.linkedin.com/in/farzeena-ayub/",
+        githubUrl: "https://github.com/Farzinaayub",
+        twitterUrl: "",
         contactEmail: "hello@farzeena.com",
         metaTitleTemplate: "%s | Farzeena",
         defaultMetaDescription:
