@@ -27,7 +27,7 @@ export default function Blogs() {
                 <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-slate-200 relative shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center">
                   <FileText className="w-12 h-12 text-slate-400" />
                   {blog.coverImageUrl && (
-                    <img src={getGoogleDriveImageUrl(blog.coverImageUrl)} alt={blog.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <img src={getGoogleDriveImageUrl(blog.coverImageUrl)} alt={blog.title} className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   )}
                   <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-bold text-slate-700">
                     {blog.readingTime || 5} min read
