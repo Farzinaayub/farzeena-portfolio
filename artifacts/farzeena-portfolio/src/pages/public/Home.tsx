@@ -147,6 +147,21 @@ function ShowcasePlaceholder({ idx }: { idx: number }) {
   );
 }
 
+function ShowcaseCardImage({ imageUrl, idx }: { imageUrl: string; idx: number }) {
+  const [errored, setErrored] = useState(false);
+  const src = getGoogleDriveImageUrl(imageUrl);
+  if (errored) return <ShowcasePlaceholder idx={idx} />;
+  return (
+    <img
+      src={src}
+      alt=""
+      className="w-full object-cover"
+      style={{ maxHeight: 180 }}
+      onError={() => setErrored(true)}
+    />
+  );
+}
+
 function CardStackShowcase({ designs }: { designs?: Array<{ title: string; description?: string; imageUrl?: string; tag?: string }> }) {
   const cards = (designs && designs.length > 0) ? designs : SHOWCASE_DEFAULTS;
   const [order, setOrder] = useState(() => cards.map((_, i) => i));
@@ -174,7 +189,7 @@ function CardStackShowcase({ designs }: { designs?: Array<{ title: string; descr
               onClick={isTop ? sendToBack : undefined}
             >
               {card.imageUrl ? (
-                <img src={card.imageUrl} alt={card.title} className="w-full h-auto object-cover" />
+                <ShowcaseCardImage imageUrl={card.imageUrl} idx={cardIdx} />
               ) : (
                 <ShowcasePlaceholder idx={cardIdx} />
               )}
