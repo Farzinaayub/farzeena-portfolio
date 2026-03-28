@@ -45,7 +45,7 @@ router.put("/", async (req, res) => {
     await connectMongoose();
     let hero = await HeroSection.findOne();
     if (hero) {
-      Object.assign(hero, req.body);
+      hero.set(req.body);
       await hero.save();
     } else {
       hero = await HeroSection.create(req.body);

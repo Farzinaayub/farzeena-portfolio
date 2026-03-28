@@ -39,7 +39,7 @@ router.put("/", async (req, res) => {
     await connectMongoose();
     let about = await AboutSection.findOne();
     if (about) {
-      Object.assign(about, req.body);
+      about.set(req.body);
       await about.save();
     } else {
       about = await AboutSection.create(req.body);

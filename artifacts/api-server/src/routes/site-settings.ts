@@ -33,7 +33,7 @@ router.put("/", async (req, res) => {
     await connectMongoose();
     let settings = await SiteSettings.findOne();
     if (settings) {
-      Object.assign(settings, req.body);
+      settings.set(req.body);
       await settings.save();
     } else {
       settings = await SiteSettings.create(req.body);
