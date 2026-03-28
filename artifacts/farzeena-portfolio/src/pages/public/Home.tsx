@@ -75,15 +75,15 @@ export default function Home() {
             </div>
 
             {/* Vertical sliding headline carousel */}
-            <div className="min-h-[90px] sm:min-h-[110px] lg:min-h-[130px] flex items-center justify-center mb-8 overflow-hidden">
+            <div className="min-h-[64px] sm:min-h-[80px] lg:min-h-[96px] flex items-center justify-center mb-8 overflow-hidden">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.h1
                   key={slideIdx}
-                  initial={{ y: 56, opacity: 0 }}
+                  initial={{ y: 48, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -56, opacity: 0 }}
+                  exit={{ y: -48, opacity: 0 }}
                   transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="sm:text-5xl lg:text-6xl text-navy tracking-tight font-bold text-[55px]"
+                  className="text-3xl sm:text-4xl lg:text-5xl text-navy tracking-tight font-semibold leading-snug"
                 >
                   {headlines[slideIdx]}
                 </motion.h1>
