@@ -3,7 +3,7 @@ import {
   useGetAboutSection, useGetSiteSettings, useSubmitContact 
 } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, ChevronRight, FileText, Database, Server, BarChart3, CheckCircle2, ExternalLink, BookOpen, Linkedin, Send, X, LineChart, Layers } from "lucide-react";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -44,12 +44,15 @@ export default function Home() {
     : DEFAULT_TAGLINES;
 
   const [tagIdx, setTagIdx] = useState(0);
-  const [direction, setDirection] = useState(1);
+  const [fading, setFading] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setDirection(1);
-      setTagIdx(i => (i + 1) % taglines.length);
+      setFading(true);
+      setTimeout(() => {
+        setTagIdx(i => (i + 1) % taglines.length);
+        setFading(false);
+      }, 350);
     }, 2800);
     return () => clearInterval(timer);
   }, [taglines.length]);
@@ -81,19 +84,15 @@ export default function Home() {
 
             {/* Rotating tagline */}
             <div className="h-9 flex items-center justify-center mb-8 overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.p
-                  key={tagIdx}
-                  custom={direction}
-                  initial={{ y: 28, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -28, opacity: 0 }}
-                  transition={{ duration: 0.45, ease: "easeInOut" }}
-                  className="text-lg sm:text-xl text-primary font-semibold"
-                >
-                  {taglines[tagIdx]}
-                </motion.p>
-              </AnimatePresence>
+              <p
+                className="text-lg sm:text-xl text-primary font-semibold transition-all duration-300"
+                style={{
+                  opacity: fading ? 0 : 1,
+                  transform: fading ? "translateY(-12px)" : "translateY(0)",
+                }}
+              >
+                {taglines[tagIdx]}
+              </p>
             </div>
 
             {/* Subtitle */}
