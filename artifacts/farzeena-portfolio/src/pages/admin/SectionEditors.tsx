@@ -533,7 +533,13 @@ export function ContactSubmissions() {
               ) : (
                 submissions?.map(sub => (
                   <React.Fragment key={sub._id}>
-                    <tr className={`hover:bg-slate-50 transition-colors cursor-pointer ${!sub.read ? 'bg-blue-50/30' : ''}`} onClick={() => setExpandedId(expandedId === sub._id ? null : sub._id)}>
+                    <tr className={`hover:bg-slate-50 transition-colors cursor-pointer ${!sub.read ? 'bg-blue-50/30' : ''}`} onClick={() => {
+                        const newId = expandedId === sub._id ? null : sub._id;
+                        setExpandedId(newId);
+                        if (newId && !sub.read) {
+                          updateSubmission({ id: sub._id!, data: { read: true } });
+                        }
+                      }}>
                       <td className="px-4 py-4 text-center" onClick={e => e.stopPropagation()}>
                         <input type="checkbox" checked={selectedIds.includes(sub._id)} onChange={(e) => {
                           if (e.target.checked) setSelectedIds([...selectedIds, sub._id]);
