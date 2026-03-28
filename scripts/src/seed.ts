@@ -213,7 +213,7 @@ console.log("✅ About section seeded");
 
 await SiteSettings.deleteMany({});
 await SiteSettings.create({
-  siteTitle: "Farzeena — Analytics Engineer",
+  siteTitle: "Farzeena P A",
   ctaBannerText: "Testing Analytics Insights",
   footerText: "© 2025 Farzeena. All rights reserved.",
   linkedinUrl: "https://linkedin.com",

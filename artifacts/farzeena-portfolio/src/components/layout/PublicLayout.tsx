@@ -61,7 +61,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               <img src={analystAvatar} alt="Farzeena" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-xl text-foreground hidden sm:block">
-              {settings?.siteTitle || "Farzeena."}
+              {settings?.siteTitle || "Farzeena P A"}
             </span>
           </Link>
 
@@ -142,7 +142,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <img src={analystAvatar} alt="Farzeena" className="w-full h-full object-cover" />
               </div>
               <span className="font-bold text-lg text-white">
-                {settings?.siteTitle || "Farzeena."}
+                {settings?.siteTitle || "Farzeena P A"}
               </span>
             </div>
             
