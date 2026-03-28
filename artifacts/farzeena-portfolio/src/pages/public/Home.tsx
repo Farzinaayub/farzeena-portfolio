@@ -6,14 +6,14 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronRight, FileText, Database, Server, BarChart3, CheckCircle2, ExternalLink, BookOpen, Linkedin, Send, X, LineChart, Layers } from "lucide-react";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-const DEFAULT_TAGLINES = [
-  "Turning raw data into reliable analytics pipelines",
-  "Building BI dashboards that drive business decisions",
-  "ETL/ELT development with Python, SQL & dbt",
-  "Data modeling for scalable analytics architecture",
+const DEFAULT_HEADLINES = [
+  "Analytics Engineering for Data-Driven Decisions",
+  "Transforming Raw Data into Business Intelligence",
+  "Building Scalable Pipelines & BI Dashboards",
+  "Helping Teams Make Confident Data-Backed Decisions",
 ];
 
 const PIPELINE_DEFAULTS = [
@@ -38,61 +38,86 @@ export default function Home() {
   const { data: about } = useGetAboutSection();
   const { data: settings } = useGetSiteSettings();
 
-  // Rotating taglines — sourced from pipelineSteps.label if set in admin
-  const taglines = hero?.pipelineSteps?.length
+  // Carousel headlines — sourced from pipelineSteps.label if admin has set them
+  const headlines = hero?.pipelineSteps?.length
     ? hero.pipelineSteps.map(s => s.label).filter(Boolean)
-    : DEFAULT_TAGLINES;
+    : DEFAULT_HEADLINES;
 
-  const [tagIdx, setTagIdx] = useState(0);
-  const [fading, setFading] = useState(false);
+  const [headlineIdx, setHeadlineIdx] = useState(0);
+  const [slide, setSlide] = useState<"idle" | "out" | "in">("idle");
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setFading(true);
+      setSlide("out");
       setTimeout(() => {
-        setTagIdx(i => (i + 1) % taglines.length);
-        setFading(false);
-      }, 350);
-    }, 2800);
+        setHeadlineIdx(i => (i + 1) % headlines.length);
+        setSlide("in");
+        setTimeout(() => setSlide("idle"), 400);
+      }, 380);
+    }, 3400);
     return () => clearInterval(timer);
-  }, [taglines.length]);
+  }, [headlines.length]);
 
-  // Pipeline section always uses defaults (pipelineSteps field is used for rotating taglines)
+  const headlineStyle: React.CSSProperties = {
+    opacity: slide === "out" ? 0 : 1,
+    transform: slide === "out" ? "translateY(-20px)" : slide === "in" ? "translateY(8px)" : "translateY(0)",
+    transition: slide === "idle" ? "none" : "opacity 0.38s ease, transform 0.38s ease",
+  };
+
   const pipelineSteps = PIPELINE_DEFAULTS;
 
   return (
     <div className="flex flex-col min-h-screen relative">
 
-      {/* 1. HERO — full-width centered */}
-      <section className="relative pt-12 pb-16 lg:pt-20 lg:pb-24 overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      {/* 1. HERO — Carousel */}
+      <section className="relative pt-14 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+        {/* Subtle radial accent */}
+        <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
+          <div className="w-[600px] h-[400px] rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.55 }}
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-8">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6 border border-primary/15">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               Analytics Engineer · Data &amp; Business Intelligence
             </div>
 
-            {/* Main heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] mb-6 tracking-tight">
-              {hero?.heading || "Analytics Engineering\nfor Data-Driven Decisions"}
-            </h1>
+            {/* Static intro */}
+            <p className="text-base sm:text-lg text-slate-500 font-medium mb-4 tracking-wide uppercase">
+              Hi, I'm Farzeena — I help data teams
+            </p>
 
-            {/* Rotating tagline */}
-            <div className="h-9 flex items-center justify-center mb-8 overflow-hidden">
-              <p
-                className="text-lg sm:text-xl text-primary font-semibold transition-all duration-300"
-                style={{
-                  opacity: fading ? 0 : 1,
-                  transform: fading ? "translateY(-12px)" : "translateY(0)",
-                }}
+            {/* Carousel headline */}
+            <div className="min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center mb-6">
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] tracking-tight"
+                style={headlineStyle}
               >
-                {taglines[tagIdx]}
-              </p>
+                {headlines[headlineIdx]}
+              </h1>
+            </div>
+
+            {/* Progress dots */}
+            <div className="flex items-center justify-center gap-2 mb-10">
+              {headlines.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setSlide("out"); setTimeout(() => { setHeadlineIdx(i); setSlide("in"); setTimeout(() => setSlide("idle"), 400); }, 380); }}
+                  className="transition-all duration-300 rounded-full"
+                  style={{
+                    width: i === headlineIdx ? "28px" : "8px",
+                    height: "8px",
+                    background: i === headlineIdx ? "var(--color-primary, #6366f1)" : "#cbd5e1",
+                  }}
+                  aria-label={`Go to headline ${i + 1}`}
+                />
+              ))}
             </div>
 
             {/* Subtitle */}
@@ -100,17 +125,17 @@ export default function Home() {
               {hero?.subtitle || "Transforming complex raw data into clean, reliable, and actionable insights to scale your business intelligence."}
             </p>
 
-            {/* CTA */}
+            {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href={hero?.cta1Link || "/case-studies"}
-                className="px-8 py-4 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                className="px-8 py-4 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 text-base"
               >
                 {hero?.cta1Text || "View Case Studies"} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/#about"
-                className="px-8 py-4 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 shadow-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all"
+                className="px-8 py-4 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 shadow-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all text-base"
               >
                 About Me
               </Link>
@@ -121,8 +146,8 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6"
+            transition={{ duration: 0.65, delay: 0.3 }}
+            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6"
           >
             {[
               { value: "4+", label: "Years Experience" },
@@ -130,9 +155,9 @@ export default function Home() {
               { value: "10+", label: "Tools Mastered" },
               { value: "5+", label: "Industries Served" },
             ].map((stat, i) => (
-              <div key={i} className="bg-white rounded-2xl p-5 border shadow-sm text-center">
+              <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-100 shadow-sm text-center hover:shadow-md transition-shadow">
                 <div className="text-3xl font-extrabold text-primary mb-1">{stat.value}</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{stat.label}</div>
               </div>
             ))}
           </motion.div>

@@ -100,8 +100,8 @@ export function HeroEditor() {
         <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-5">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="font-bold text-lg text-navy">Rotating Taglines</h3>
-              <p className="text-xs text-slate-500 mt-0.5">These lines slide automatically in the hero. Add up to 6.</p>
+              <h3 className="font-bold text-lg text-navy">Hero Carousel Headlines</h3>
+              <p className="text-xs text-slate-500 mt-0.5">These rotate as the big headline in the hero section. Add up to 6 statements.</p>
             </div>
             <button
               type="button"
