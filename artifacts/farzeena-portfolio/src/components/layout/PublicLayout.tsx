@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 import { Menu, X, Search, Github, Linkedin, Twitter } from "lucide-react";
-import analystAvatar from "@/assets/analyst-caricature.png";
+import analyticsLogo from "@/assets/analytics-logo.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -57,8 +57,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center">
-              <img src={analystAvatar} alt="Farzeena" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center p-1.5">
+              <img src={analyticsLogo} alt="Analytics" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-xl text-foreground hidden sm:block">
               {settings?.siteTitle || "Farzeena P A"}
@@ -138,8 +138,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg overflow-hidden bg-white/10 flex items-center justify-center">
-                <img src={analystAvatar} alt="Farzeena" className="w-full h-full object-cover" />
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center p-1">
+                <img src={analyticsLogo} alt="Analytics" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-lg text-white">
                 {settings?.siteTitle || "Farzeena P A"}
