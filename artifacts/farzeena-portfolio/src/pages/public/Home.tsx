@@ -75,15 +75,15 @@ export default function Home() {
             </div>
 
             {/* Vertical sliding headline carousel */}
-            <div className="min-h-[64px] sm:min-h-[80px] lg:min-h-[96px] flex items-center justify-center mb-8 overflow-hidden">
+            <div className="min-h-[52px] sm:min-h-[64px] lg:min-h-[80px] flex items-center justify-center mb-8 overflow-hidden">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.h1
                   key={slideIdx}
-                  initial={{ y: 48, opacity: 0 }}
+                  initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -48, opacity: 0 }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-3xl sm:text-4xl lg:text-5xl text-navy tracking-tight font-semibold leading-snug"
+                  exit={{ y: -40, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-2xl sm:text-3xl lg:text-4xl text-navy tracking-tight font-medium leading-snug"
                 >
                   {headlines[slideIdx]}
                 </motion.h1>
@@ -91,16 +91,16 @@ export default function Home() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={hero?.cta1Link || "/case-studies"}
-                className="px-8 py-4 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 text-base"
+                className="px-6 py-2.5 rounded-lg bg-primary text-white font-medium border border-primary hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm tracking-wide"
               >
                 {hero?.cta1Text || "View Case Studies"} <ArrowRight className="w-4 h-4" />
               </Link>
               <button
                 onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-8 py-4 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 shadow-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all text-base"
+                className="px-6 py-2.5 rounded-lg text-slate-700 font-medium border border-slate-300 hover:border-navy hover:text-navy transition-colors text-sm tracking-wide"
               >
                 {hero?.cta2Text || "About Me"}
               </button>
