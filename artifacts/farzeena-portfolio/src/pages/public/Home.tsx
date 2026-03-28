@@ -62,6 +62,39 @@ export default function Home() {
           <div className="w-[600px] h-[400px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
+        {/* ASCII art — analytics-themed, only on xl+ where there's space beside the centered content */}
+        <div className="pointer-events-none select-none hidden xl:block">
+          {/* Left: pipeline run log */}
+          <pre className="absolute left-6 top-1/2 -translate-y-1/2 font-mono text-[10.5px] leading-[1.65] text-primary opacity-[0.13] whitespace-pre">
+{`pipeline.run
+─────────────────
+● ingest    ✓ ok
+● validate  ✓ ok
+● transform ✓ ok
+● load      ✓ ok
+● publish   ✓ ok
+─────────────────
+rows   1,247,832
+score     99.2 %
+elapsed  0:03:42`}
+          </pre>
+          {/* Right: SQL fragment */}
+          <pre className="absolute right-6 top-1/2 -translate-y-1/2 font-mono text-[10.5px] leading-[1.65] text-primary opacity-[0.13] whitespace-pre text-left">
+{`SELECT
+  category,
+  SUM(revenue),
+  AVG(leakage)
+FROM metrics
+WHERE
+  quarter = 'Q4'
+  AND leakage > 0
+GROUP BY category
+ORDER BY leakage
+──────────────────
+1,247 rows · 0.3s`}
+          </pre>
+        </div>
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
