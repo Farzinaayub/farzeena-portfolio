@@ -56,7 +56,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative">
       {/* 1. HERO — Carousel */}
-      <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-20 overflow-hidden">
+      <section className="relative pb-12 lg:pt-24 lg:pb-20 overflow-hidden pt-[20px]">
         {/* Subtle radial accent */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div className="w-[600px] h-[400px] rounded-full bg-primary/5 blur-3xl" />
