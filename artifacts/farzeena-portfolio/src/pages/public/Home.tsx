@@ -278,7 +278,7 @@ export default function Home() {
                    {about?.profileImageUrl ? (
                      <img src={getGoogleDriveImageUrl(about.profileImageUrl)} alt={about?.name} className="w-full h-full object-cover" />
                    ) : (
-                     <img src={`${import.meta.env.BASE_URL}images/avatar-placeholder.png`} alt="Profile" className="w-full h-full object-cover" />
+                     <img src={`${import.meta.env.BASE_URL}images/hijabi-portrait.png`} alt="Farzeena" className="w-full h-full object-cover object-top" />
                    )}
                  </div>
                </div>
