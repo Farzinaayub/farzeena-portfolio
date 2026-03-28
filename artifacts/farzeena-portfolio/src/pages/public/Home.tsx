@@ -55,7 +55,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen relative">
-
       {/* 1. HERO — Carousel */}
       <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-20 overflow-hidden">
         {/* Subtle radial accent */}
@@ -84,7 +83,7 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -56, opacity: 0 }}
                   transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] tracking-tight"
+                  className="text-4xl sm:text-5xl lg:text-6xl text-navy leading-[1.1] tracking-tight font-semibold"
                 >
                   {headlines[slideIdx]}
                 </motion.h1>
@@ -109,7 +108,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* 2. DATA PIPELINE ARCHITECTURE SECTION */}
       <section className="py-12 bg-slate-900 relative overflow-hidden">
         {/* Background decoration */}
@@ -156,7 +154,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* 3. CASE STUDIES CAROUSEL */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 flex items-end justify-between">
@@ -221,7 +218,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
       {/* 4. BLOGS GRID */}
       <section className="py-16 bg-slate-50/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -258,7 +254,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* 5. ABOUT ME */}
       <section className="py-20" id="about">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -357,7 +352,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* 6. CONTACT SECTION */}
       <section className="py-16" id="contact">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -369,7 +363,6 @@ export default function Home() {
           <ContactSection linkedinUrl={settings?.linkedinUrl || "https://www.linkedin.com/in/farzeena-ayub/"} />
         </div>
       </section>
-
     </div>
   );
 }
