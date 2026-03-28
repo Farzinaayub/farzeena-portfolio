@@ -3,11 +3,8 @@ import { useGetSiteSettings } from "@workspace/api-client-react";
 import { Menu, X, Github, Linkedin, Twitter } from "lucide-react";
 import analyticsLogo from "@/assets/analytics-logo.png";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-const EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
-const DUR = "0.45s";
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,11 +12,23 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location, navigate] = useLocation();
   const { data: settings } = useGetSiteSettings();
 
+  // Scroll-linked MotionValues — drive the animation directly from scroll position
+  const { scrollY } = useScroll();
+
+  // ── Expanded bar (logo + right nav): fades out as you scroll 0→80px ──
+  const expandedOpacity = useTransform(scrollY, [0, 80], [1, 0]);
+  const expandedY      = useTransform(scrollY, [0, 80], [0, -12]);
+
+  // ── Capsule: fades in as you scroll 30→100px ──
+  const capsuleOpacity = useTransform(scrollY, [30, 100], [0, 1]);
+  const capsuleY       = useTransform(scrollY, [30, 100], [-18, 0]);
+  const capsuleScale   = useTransform(scrollY, [30, 100], [0.94, 1]);
+
+  // Pointer-events threshold (still need a boolean for click targets)
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const unsub = scrollY.on("change", (v) => setIsScrolled(v > 50));
+    return unsub;
+  }, [scrollY]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -52,21 +61,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const isActive = (href: string) =>
     href === "/" ? location === "/" : location.startsWith(href.replace("/#", ""));
 
-  const transition = `opacity ${DUR} ${EASE}, transform ${DUR} ${EASE}`;
-
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <header className="fixed top-0 inset-x-0 z-50">
 
-        {/* ─── STATE 1: transparent full-width bar (top of page) ─── */}
-        <div
+        {/* ── EXPANDED: transparent full-width bar, driven by scroll ── */}
+        <motion.div
+          style={{ opacity: expandedOpacity, y: expandedY, pointerEvents: isScrolled ? "none" : "auto" }}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-5"
-          style={{
-            opacity: isScrolled ? 0 : 1,
-            transform: isScrolled ? "translateY(-10px)" : "translateY(0)",
-            pointerEvents: isScrolled ? "none" : "auto",
-            transition,
-          }}
         >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
@@ -78,7 +80,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
 
-          {/* Desktop nav — plain links, no capsule */}
+          {/* Desktop nav — no capsule, plain text links */}
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
@@ -104,19 +106,15 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           >
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
-        </div>
+        </motion.div>
 
-        {/* ─── STATE 2: floating dark capsule (on scroll) — nav links only ─── */}
-        <div
+        {/* ── CAPSULE: floats in as you scroll, driven by scroll ── */}
+        <motion.div
+          style={{ opacity: capsuleOpacity, y: capsuleY, scale: capsuleScale, pointerEvents: isScrolled ? "auto" : "none" }}
           className="absolute inset-x-0 top-0 flex justify-center pt-3 px-4"
-          style={{
-            opacity: isScrolled ? 1 : 0,
-            transform: isScrolled ? "translateY(0)" : "translateY(-14px)",
-            pointerEvents: isScrolled ? "auto" : "none",
-            transition,
-          }}
         >
-          <nav className="hidden md:flex items-center gap-0.5 bg-white/75 backdrop-blur-2xl rounded-full px-2.5 py-2 shadow-lg shadow-indigo-100/60 border border-indigo-100/50">
+          {/* Desktop capsule — nav links only, same theme */}
+          <nav className="hidden md:flex items-center gap-0.5 bg-white/80 backdrop-blur-2xl rounded-full px-2.5 py-2 shadow-lg shadow-indigo-100/70 border border-indigo-100/60 ring-1 ring-indigo-50">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -134,15 +132,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
 
-          {/* Mobile toggle in scrolled state */}
+          {/* Mobile toggle inside capsule */}
           <button
-            className="md:hidden p-2 text-foreground bg-white/75 backdrop-blur-2xl rounded-full border border-indigo-100/50 shadow-lg"
-            style={{ pointerEvents: isScrolled ? "auto" : "none" }}
+            className="md:hidden p-2.5 text-foreground bg-white/80 backdrop-blur-2xl rounded-full border border-indigo-100/60 shadow-lg"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-        </div>
+        </motion.div>
       </header>
 
       {/* Mobile Nav Drawer */}
