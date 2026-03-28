@@ -31,73 +31,167 @@ function PipelineIcon({ name }: { name: string }) {
   return <Layers className="w-6 h-6" />;
 }
 
-function HeroVisualization() {
-  const data = [38, 52, 44, 68, 57, 75, 82, 91];
-  const W = 280, H = 148;
-  const pad = { t: 8, r: 8, b: 22, l: 8 };
-  const cW = W - pad.l - pad.r;
-  const cH = H - pad.t - pad.b;
-  const max = Math.max(...data);
-  const pts = data.map((d, i) => ({
-    x: pad.l + (i / (data.length - 1)) * cW,
-    y: pad.t + cH - (d / max) * cH,
-  }));
-  const lineD = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
-  const areaD = `${lineD} L${pts[pts.length - 1].x},${H - pad.b} L${pts[0].x},${H - pad.b} Z`;
+const SHOWCASE_DEFAULTS = [
+  { title: "Revenue Leakage Analysis", description: "15–25% revenue loss identified via Power BI", tag: "Power BI" },
+  { title: "Pipeline Performance Monitor", description: "Real-time dbt health & throughput metrics", tag: "Power BI" },
+  { title: "Customer Segmentation Report", description: "360° view of cohorts and behavioral clusters", tag: "Tableau" },
+];
+
+function ShowcasePlaceholder({ idx }: { idx: number }) {
+  const theme = idx % 3;
+
+  if (theme === 0) {
+    const bars = [42, 65, 51, 78, 58, 89];
+    return (
+      <>
+        <div className="bg-indigo-600 px-3 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-sm bg-white/70" />
+            <span className="text-white text-[9px] font-semibold tracking-wide">Power BI Desktop</span>
+          </div>
+          <div className="flex gap-1"><div className="w-2 h-2 rounded-full bg-white/20" /><div className="w-2 h-2 rounded-full bg-white/20" /></div>
+        </div>
+        <div className="px-3 pt-2.5 pb-1 flex gap-1.5">
+          {[{v:"-15%",l:"Leakage",c:"text-red-500"},{v:"$2.1M",l:"Recovered",c:"text-emerald-600"},{v:"99.2%",l:"Quality",c:"text-indigo-600"}].map(k=>(
+            <div key={k.l} className="flex-1 bg-slate-50 rounded-lg px-1.5 py-1.5 border border-slate-100">
+              <div className={`text-[11px] font-bold ${k.c}`}>{k.v}</div>
+              <div className="text-[8px] text-slate-400 mt-0.5">{k.l}</div>
+            </div>
+          ))}
+        </div>
+        <div className="px-3 pb-1">
+          <svg viewBox="0 0 186 52" width="100%">
+            <defs><linearGradient id="sg0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#6366f1" stopOpacity="0.7"/><stop offset="100%" stopColor="#6366f1" stopOpacity="0.2"/></linearGradient></defs>
+            {bars.map((h,i)=>{const bh=(h/100)*44;return<rect key={i} x={i*31+1} y={44-bh} width="26" height={bh} rx="2.5" fill="url(#sg0)"/>;})}
+            <line x1="0" y1="30" x2="186" y2="30" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="3 4"/>
+          </svg>
+          <div className="flex justify-between mt-0.5">
+            {["Jan","Feb","Mar","Apr","May","Jun"].map(m=><span key={m} className="text-[7px] text-slate-400">{m}</span>)}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (theme === 1) {
+    const ys = [60,44,55,36,50,28,34,20];
+    const pts2 = ys.map((y,x)=>`${x*24+4},${y}`).join(" ");
+    return (
+      <>
+        <div className="bg-violet-600 px-3 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-sm bg-white/70" />
+            <span className="text-white text-[9px] font-semibold tracking-wide">Power BI Desktop</span>
+          </div>
+          <div className="flex gap-1"><div className="w-2 h-2 rounded-full bg-white/20" /><div className="w-2 h-2 rounded-full bg-white/20" /></div>
+        </div>
+        <div className="px-3 pt-2.5 pb-1 flex gap-4 items-end">
+          <div><div className="text-lg font-bold text-slate-800">98.7%</div><div className="text-[9px] text-slate-400">Pipeline Uptime</div></div>
+          <div className="border-l border-slate-200 pl-4"><div className="text-lg font-bold text-violet-600">↑ 23%</div><div className="text-[9px] text-slate-400">Throughput</div></div>
+        </div>
+        <div className="px-3 pb-1">
+          <svg viewBox="0 0 180 68" width="100%">
+            <defs><linearGradient id="sg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#7c3aed" stopOpacity="0.18"/><stop offset="100%" stopColor="#7c3aed" stopOpacity="0"/></linearGradient></defs>
+            <polygon points={`4,68 ${pts2} 172,68`} fill="url(#sg1)"/>
+            <polyline points={pts2} fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            {ys.map((y,x)=><circle key={x} cx={x*24+4} cy={y} r={x===7?3.5:2} fill="#7c3aed" opacity={x===7?1:0.35}/>)}
+          </svg>
+        </div>
+      </>
+    );
+  }
+
+  const segs = [{pct:42,c:"#059669"},{pct:31,c:"#34d399"},{pct:27,c:"#6ee7b7"}];
+  const r2=24, cx2=36, cy2=36; let cum=0;
+  const arcs = segs.map(s=>{
+    const a0=cum*3.6*Math.PI/180; cum+=s.pct; const a1=cum*3.6*Math.PI/180;
+    const x1=cx2+r2*Math.sin(a0),y1=cy2-r2*Math.cos(a0),x2=cx2+r2*Math.sin(a1),y2=cy2-r2*Math.cos(a1);
+    return {d:`M${cx2},${cy2} L${x1},${y1} A${r2},${r2} 0 ${s.pct>50?1:0},1 ${x2},${y2} Z`,c:s.c,pct:s.pct};
+  });
+  return (
+    <>
+      <div className="bg-emerald-600 px-3 py-2 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-sm bg-white/70" />
+          <span className="text-white text-[9px] font-semibold tracking-wide">Tableau Desktop</span>
+        </div>
+        <div className="flex gap-1"><div className="w-2 h-2 rounded-full bg-white/20" /><div className="w-2 h-2 rounded-full bg-white/20" /></div>
+      </div>
+      <div className="px-3 pt-2.5 pb-1 flex gap-3 items-center">
+        <svg viewBox="0 0 72 72" width="72" height="72" className="shrink-0">
+          {arcs.map((a,i)=><path key={i} d={a.d} fill={a.c}/>)}
+          <circle cx={cx2} cy={cy2} r="14" fill="white"/>
+          <text x={cx2} y={cy2+3} textAnchor="middle" fontSize="7" fill="#1e293b" fontWeight="bold">100%</text>
+        </svg>
+        <div className="space-y-1.5 flex-1">
+          {[{l:"Enterprise",v:"42%",c:"#059669"},{l:"SMB",v:"31%",c:"#34d399"},{l:"Startup",v:"27%",c:"#6ee7b7"}].map(item=>(
+            <div key={item.l} className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-sm shrink-0" style={{backgroundColor:item.c}}/>
+              <span className="text-[9px] text-slate-600">{item.l}</span>
+              <span className="text-[9px] font-bold text-slate-800 ml-auto">{item.v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="px-3 pb-2 pt-1 border-t border-slate-100">
+        <div className="grid grid-cols-3 text-[7.5px] font-semibold text-slate-400 mb-1">
+          {["Customer","Segment","Score"].map(h=><span key={h}>{h}</span>)}
+        </div>
+        {[["C-0421","Enterprise","92"],["C-0397","SMB","87"],["C-0511","Startup","74"]].map((row,i)=>(
+          <div key={i} className="grid grid-cols-3 text-[7.5px] text-slate-600 py-0.5 border-t border-slate-50">
+            {row.map((cell,j)=><span key={j}>{cell}</span>)}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function CardStackShowcase({ designs }: { designs?: Array<{ title: string; description?: string; imageUrl?: string; tag?: string }> }) {
+  const cards = (designs && designs.length > 0) ? designs : SHOWCASE_DEFAULTS;
+  const [order, setOrder] = useState(() => cards.map((_, i) => i));
+
+  useEffect(() => {
+    setOrder(cards.map((_, i) => i));
+  }, [cards.length]);
+
+  const sendToBack = () => setOrder(prev => { const [f, ...r] = prev; return [...r, f]; });
 
   return (
     <div className="relative w-full max-w-[300px]">
-      <div className="flex gap-2 mb-3">
-        <div className="flex-1 bg-white border border-slate-200/80 rounded-xl px-3 py-2.5 shadow-sm">
-          <p className="text-[9px] text-slate-400 font-medium uppercase tracking-wide leading-none mb-1.5">Data Quality</p>
-          <p className="text-base font-bold text-slate-800">99.2%</p>
-        </div>
-        <div className="flex-1 bg-white border border-slate-200/80 rounded-xl px-3 py-2.5 shadow-sm">
-          <p className="text-[9px] text-slate-400 font-medium uppercase tracking-wide leading-none mb-1.5">Pipeline Uptime</p>
-          <p className="text-base font-bold text-primary">98.7%</p>
-        </div>
-        <div className="flex-1 bg-white border border-slate-200/80 rounded-xl px-3 py-2.5 shadow-sm">
-          <p className="text-[9px] text-slate-400 font-medium uppercase tracking-wide leading-none mb-1.5">Rows / mo</p>
-          <p className="text-base font-bold text-slate-800">1.2M</p>
-        </div>
+      <div className="relative" style={{ height: 248 }}>
+        {order.map((cardIdx, posIdx) => {
+          const card = cards[cardIdx];
+          if (!card || posIdx > 2) return null;
+          const isTop = posIdx === 0;
+          return (
+            <motion.div
+              key={cardIdx}
+              className={`absolute inset-x-0 top-0 bg-white rounded-2xl border border-slate-200/80 shadow-md overflow-hidden select-none ${isTop ? "cursor-pointer" : ""}`}
+              style={{ zIndex: cards.length - posIdx }}
+              animate={{ y: posIdx * 10, scale: 1 - posIdx * 0.04, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 380, damping: 36 }}
+              onClick={isTop ? sendToBack : undefined}
+            >
+              {card.imageUrl ? (
+                <img src={card.imageUrl} alt={card.title} className="w-full h-auto object-cover" />
+              ) : (
+                <ShowcasePlaceholder idx={cardIdx} />
+              )}
+              <div className="px-3 py-2.5 border-t border-slate-100 bg-white flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-[11px] font-bold text-slate-800 leading-tight">{card.title}</p>
+                  {card.description && <p className="text-[9px] text-slate-400 mt-0.5 leading-snug">{card.description}</p>}
+                </div>
+                {card.tag && (
+                  <span className="shrink-0 text-[8px] font-semibold text-primary bg-primary/8 border border-primary/15 px-1.5 py-0.5 rounded-full">{card.tag}</span>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
-
-      <div className="bg-white/70 backdrop-blur-sm border border-slate-200/80 rounded-2xl px-4 pt-3.5 pb-2 shadow-sm">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-[10px] text-slate-500 font-medium tracking-wide">Pipeline Throughput</p>
-          <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">↑ 23%</span>
-        </div>
-        <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="text-primary overflow-visible">
-          <defs>
-            <linearGradient id="heroAreaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0.01" />
-            </linearGradient>
-          </defs>
-          {[0.33, 0.66, 1].map((r, i) => (
-            <line key={i}
-              x1={pad.l} y1={pad.t + cH * (1 - r)}
-              x2={W - pad.r} y2={pad.t + cH * (1 - r)}
-              stroke="#e2e8f0" strokeWidth="1" strokeDasharray="3 5"
-            />
-          ))}
-          <path d={areaD} fill="url(#heroAreaGrad)" />
-          <path d={lineD} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          {pts.slice(0, -1).map((p, i) => (
-            <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="currentColor" opacity="0.3" />
-          ))}
-          <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="5.5" fill="white" stroke="currentColor" strokeWidth="2" />
-          <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="2.5" fill="currentColor" />
-          {["Q1", "Q2", "Q3", "Q4"].map((label, i) => (
-            <text key={label}
-              x={pad.l + ((i * 2 + 1) / (data.length - 1)) * cW}
-              y={H - 4}
-              textAnchor="middle" fontSize="8" fill="#94a3b8"
-              fontFamily="system-ui,sans-serif"
-            >{label}</text>
-          ))}
-        </svg>
-      </div>
+      <p className="text-center text-[10px] text-slate-400 mt-2 select-none">click to browse designs</p>
     </div>
   );
 }
@@ -178,14 +272,14 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* RIGHT: minimalist data visualization */}
+            {/* RIGHT: Power BI card stack */}
             <motion.div
               className="hidden lg:flex flex-shrink-0 w-[300px] xl:w-[320px] items-center justify-center"
               initial={{ opacity: 0, x: 28 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.65, delay: 0.25 }}
             >
-              <HeroVisualization />
+              <CardStackShowcase designs={hero?.showcaseDesigns} />
             </motion.div>
 
           </div>

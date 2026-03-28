@@ -146,6 +146,14 @@ export interface BlogInput {
   metaDescription?: string;
 }
 
+export interface ShowcaseDesign {
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  tag?: string;
+  order?: number;
+}
+
 export interface HeroSection {
   heading?: string;
   badgeText?: string;
@@ -156,6 +164,7 @@ export interface HeroSection {
   cta2Text?: string;
   pipelineSteps?: PipelineStep[];
   toolIcons?: ToolIcon[];
+  showcaseDesigns?: ShowcaseDesign[];
   updatedAt?: string;
 }
 
@@ -169,6 +178,7 @@ export interface HeroSectionInput {
   cta2Text?: string;
   pipelineSteps?: PipelineStep[];
   toolIcons?: ToolIcon[];
+  showcaseDesigns?: ShowcaseDesign[];
 }
 
 export interface AboutSection {

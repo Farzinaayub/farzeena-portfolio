@@ -10,6 +10,7 @@ export interface IHeroSection extends Document {
   cta2Text?: string;
   pipelineSteps: { label: string; iconName: string; order: number }[];
   toolIcons: { name: string; iconUrl: string; order: number }[];
+  showcaseDesigns: { title: string; description?: string; imageUrl?: string; tag?: string; order: number }[];
   updatedAt: Date;
 }
 
@@ -33,6 +34,15 @@ const HeroSectionSchema = new Schema<IHeroSection>(
       {
         name: String,
         iconUrl: String,
+        order: Number,
+      },
+    ],
+    showcaseDesigns: [
+      {
+        title: String,
+        description: String,
+        imageUrl: String,
+        tag: String,
         order: Number,
       },
     ],
