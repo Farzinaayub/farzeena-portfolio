@@ -38,11 +38,11 @@ export default function BlogDetail() {
       </div>
 
       {blog.coverImageUrl && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div className="w-full mb-16">
           <img 
             src={getGoogleDriveImageUrl(blog.coverImageUrl)} 
             alt={blog.title} 
-            className="w-full aspect-[2/1] object-cover object-top rounded-3xl bg-slate-100 border shadow-sm" 
+            className="w-full h-[55vh] object-cover object-top bg-slate-100" 
             onError={(e) => { e.currentTarget.parentElement!.style.display = 'none'; }}
           />
         </div>
