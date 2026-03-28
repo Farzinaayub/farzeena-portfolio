@@ -21,9 +21,10 @@ router.post("/", async (req, res) => {
     await ContactSubmission.create({ name, email, projectType, message: message || "" });
 
     const adminEmail = process.env.ADMIN_EMAIL;
+    console.log(`📬 Contact form: name=${name}, email=${email}, adminEmail=${adminEmail}, hasResendKey=${!!process.env.RESEND_API_KEY}`);
     if (adminEmail && process.env.RESEND_API_KEY) {
       try {
-        await resend.emails.send({
+        const result = await resend.emails.send({
           from: "Portfolio Contact <onboarding@resend.dev>",
           to: adminEmail,
           subject: `New message from ${name}`,
@@ -52,8 +53,9 @@ router.post("/", async (req, res) => {
             </div>
           `,
         });
-      } catch (emailErr) {
-        console.error("Failed to send notification email:", emailErr);
+        console.log(`✅ Resend result:`, JSON.stringify(result));
+      } catch (emailErr: any) {
+        console.error("❌ Resend error:", emailErr?.message || emailErr);
       }
     }
 
