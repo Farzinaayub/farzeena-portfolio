@@ -18,11 +18,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen relative">
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] rounded-full bg-blue-100/40 blur-[140px]" />
-        <div className="absolute top-[15%] -left-[15%] w-[60%] h-[60%] rounded-full bg-indigo-50/50 blur-[120px]" />
-        <div className="absolute top-[50%] right-[5%] w-[40%] h-[40%] rounded-full bg-violet-50/30 blur-[100px]" />
-      </div>
 
       {/* 1. HERO SECTION */}
       <section className="relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-hidden">

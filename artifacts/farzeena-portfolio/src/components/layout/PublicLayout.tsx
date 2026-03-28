@@ -63,6 +63,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      {/* Global gradient — shared across all public pages */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] rounded-full bg-blue-100/40 blur-[140px]" />
+        <div className="absolute top-[15%] -left-[15%] w-[60%] h-[60%] rounded-full bg-indigo-50/50 blur-[120px]" />
+        <div className="absolute top-[50%] right-[5%] w-[40%] h-[40%] rounded-full bg-violet-50/30 blur-[100px]" />
+      </div>
+
       <header className="fixed top-0 inset-x-0 z-50">
 
         {/* ── EXPANDED: transparent full-width bar, driven by scroll ── */}
