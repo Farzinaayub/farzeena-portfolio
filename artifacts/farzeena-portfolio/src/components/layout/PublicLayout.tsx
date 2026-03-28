@@ -116,7 +116,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             transition,
           }}
         >
-          <nav className="hidden md:flex items-center gap-0.5 bg-slate-900/90 backdrop-blur-2xl rounded-full px-2.5 py-2 shadow-2xl border border-white/[0.08]">
+          <nav className="hidden md:flex items-center gap-0.5 bg-white/75 backdrop-blur-2xl rounded-full px-2.5 py-2 shadow-lg shadow-indigo-100/60 border border-indigo-100/50">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -125,8 +125,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200",
                   isActive(link.href)
-                    ? "bg-white text-slate-900 font-semibold"
-                    : "text-white/65 hover:text-white hover:bg-white/10"
+                    ? "bg-primary text-white font-semibold shadow-sm shadow-primary/30"
+                    : "text-muted-foreground hover:text-foreground hover:bg-black/5"
                 )}
               >
                 {link.label}
@@ -136,7 +136,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
           {/* Mobile toggle in scrolled state */}
           <button
-            className="md:hidden p-2 text-white bg-slate-900/90 backdrop-blur-2xl rounded-full border border-white/[0.08] shadow-xl"
+            className="md:hidden p-2 text-foreground bg-white/75 backdrop-blur-2xl rounded-full border border-indigo-100/50 shadow-lg"
             style={{ pointerEvents: isScrolled ? "auto" : "none" }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
