@@ -236,7 +236,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative">
       {/* 1. HERO — 2-column: text left, visualization right */}
-      <section className="relative pt-10 pb-14 lg:pt-20 lg:pb-24 overflow-hidden">
+      <section className="relative pt-16 pb-20 lg:pt-28 lg:pb-36 overflow-hidden">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[600px] h-[420px] rounded-full bg-primary/5 blur-3xl" />
         </div>
@@ -251,12 +251,12 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-5 border border-primary/15">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-7 border border-primary/15">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 {hero?.badgeText || "Analytics Engineer · Data & Business Intelligence"}
               </div>
 
-              <div className="relative h-[148px] sm:h-[136px] lg:h-[120px] flex items-center justify-center lg:justify-start mb-8 overflow-hidden">
+              <div className="relative h-[160px] sm:h-[168px] lg:h-[200px] flex items-start justify-center lg:justify-start mb-10 overflow-visible">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.h1
                     key={slideIdx}
@@ -264,7 +264,7 @@ export default function Home() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -44, opacity: 0 }}
                     transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute w-full text-center lg:text-left text-xl sm:text-2xl lg:text-4xl text-navy tracking-tight font-medium leading-snug px-2 lg:px-0"
+                    className="absolute w-full text-center lg:text-left text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-navy tracking-tight font-semibold leading-[1.25] px-2 lg:px-0"
                   >
                     {headlines[slideIdx]}
                   </motion.h1>
