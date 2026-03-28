@@ -83,7 +83,7 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -56, opacity: 0 }}
                   transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-4xl sm:text-5xl lg:text-6xl text-navy leading-[1.1] tracking-tight font-semibold"
+                  className="text-4xl sm:text-5xl lg:text-6xl text-navy leading-[1.1] tracking-tight font-bold"
                 >
                   {headlines[slideIdx]}
                 </motion.h1>
