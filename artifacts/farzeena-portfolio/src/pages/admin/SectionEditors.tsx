@@ -9,6 +9,7 @@ import type { HeroSectionInput, AboutSectionInput, SiteSettingsInput } from "@wo
 import { useToast } from "@/hooks/use-toast";
 import { Save, Plus, Trash2, Mail, MailOpen, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
+import { getGoogleDriveImageUrl } from "@/lib/utils";
 
 export function HeroEditor() {
   const { toast } = useToast();
@@ -239,7 +240,7 @@ export function AboutEditor() {
               <input type="text" value={formData.profileImageUrl} onChange={e => setFormData({...formData, profileImageUrl: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20" />
               {formData.profileImageUrl && (
                 <div className="mt-2 w-32 h-32 bg-slate-100 rounded-xl overflow-hidden border">
-                  <img src={formData.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={getGoogleDriveImageUrl(formData.profileImageUrl)} alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 </div>
               )}
             </div>

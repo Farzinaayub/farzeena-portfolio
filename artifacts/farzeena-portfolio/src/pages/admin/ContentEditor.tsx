@@ -11,7 +11,7 @@ import {
 import type { CaseStudyInput, BlogInput } from "@workspace/api-client-react";
 import { CaseStudyInputStatus, BlogInputStatus } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { generateSlug, estimateReadingTime } from "@/lib/utils";
+import { generateSlug, estimateReadingTime, getGoogleDriveImageUrl } from "@/lib/utils";
 import { ChevronLeft, Save, X, Plus } from "lucide-react";
 import { Link } from "wouter";
 
@@ -190,7 +190,7 @@ export function CaseStudyEditor({ params }: { params?: { id?: string } }) {
             <input type="text" value={formData.coverImageUrl} onChange={(e) => setFormData({ ...formData, coverImageUrl: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://" />
             {formData.coverImageUrl && (
               <div className="mt-2 h-40 bg-slate-100 rounded-lg overflow-hidden border">
-                <img src={formData.coverImageUrl} alt="Cover Preview" className="w-full h-full object-contain" />
+                <img src={getGoogleDriveImageUrl(formData.coverImageUrl)} alt="Cover Preview" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               </div>
             )}
           </div>
@@ -379,7 +379,7 @@ export function BlogEditor({ params }: { params?: { id?: string } }) {
             <input type="text" value={formData.coverImageUrl} onChange={(e) => setFormData({ ...formData, coverImageUrl: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="https://" />
             {formData.coverImageUrl && (
               <div className="mt-2 h-40 bg-slate-100 rounded-lg overflow-hidden border">
-                <img src={formData.coverImageUrl} alt="Cover Preview" className="w-full h-full object-contain" />
+                <img src={getGoogleDriveImageUrl(formData.coverImageUrl)} alt="Cover Preview" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               </div>
             )}
           </div>
