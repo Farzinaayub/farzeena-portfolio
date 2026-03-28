@@ -4,7 +4,7 @@ import {
 } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronRight, FileText, Database, Server, BarChart3, CheckCircle2, ExternalLink, BookOpen, Linkedin, Send, X, LineChart, Layers } from "lucide-react";
+import { ArrowRight, ChevronRight, FileText, Database, Server, BarChart3, CheckCircle2, ExternalLink, BookOpen, Linkedin, Send, X, LineChart, Layers, GitBranch } from "lucide-react";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -16,19 +16,21 @@ const DEFAULT_HEADLINES = [
   "Helping Teams Make Confident Data-Backed Decisions",
 ];
 
-const PIPELINE_DEFAULTS = [
-  { label: "Data Sources", icon: "Database", desc: "APIs, databases, flat files & event streams" },
-  { label: "ETL / ELT", icon: "Server", desc: "Python pipelines, dbt transformations" },
-  { label: "Data Warehouse", icon: "Layers", desc: "BigQuery, Snowflake, Redshift schemas" },
-  { label: "BI Dashboards", icon: "BarChart3", desc: "Power BI, Tableau, Looker reports" },
+const STAGE_DEFAULTS = [
+  { label: "Data Sources", icon: "Database", description: "APIs, CSVs, event streams & operational databases ingested at source.", order: 0 },
+  { label: "ETL / ELT", icon: "GitBranch", description: "Python pipelines & dbt models clean, reshape and version every record.", order: 1 },
+  { label: "Data Warehouse", icon: "Server", description: "BigQuery & Snowflake schemas optimised for analytical query patterns.", order: 2 },
+  { label: "BI Dashboard", icon: "BarChart3", description: "Power BI & Tableau reports that translate numbers into clear decisions.", order: 3 },
 ];
 
-function PipelineIcon({ name }: { name: string }) {
-  if (name === "Database") return <Database className="w-6 h-6" />;
-  if (name === "Server") return <Server className="w-6 h-6" />;
-  if (name === "BarChart3") return <BarChart3 className="w-6 h-6" />;
-  if (name === "LineChart") return <LineChart className="w-6 h-6" />;
-  return <Layers className="w-6 h-6" />;
+function StageIcon({ name }: { name: string }) {
+  const cls = "w-4 h-4";
+  if (name === "Database") return <Database className={cls} />;
+  if (name === "GitBranch") return <GitBranch className={cls} />;
+  if (name === "Server") return <Server className={cls} />;
+  if (name === "BarChart3") return <BarChart3 className={cls} />;
+  if (name === "LineChart") return <LineChart className={cls} />;
+  return <Layers className={cls} />;
 }
 
 const SHOWCASE_DEFAULTS = [
@@ -231,7 +233,7 @@ export default function Home() {
     return () => clearInterval(t);
   }, [headlines.length]);
 
-  const pipelineSteps = PIPELINE_DEFAULTS;
+  const pipelineStages = (hero?.pipelineStages && hero.pipelineStages.length > 0) ? hero.pipelineStages : STAGE_DEFAULTS;
 
   return (
     <div className="flex flex-col min-h-screen relative">
@@ -301,48 +303,95 @@ export default function Home() {
         </div>
       </section>
       {/* 2. DATA PIPELINE ARCHITECTURE SECTION */}
-      <section className="py-12 bg-slate-900 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-blue-400 blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-indigo-400 blur-3xl"></div>
-        </div>
+      <section className="py-24 lg:py-32 bg-[#070b16] relative overflow-hidden">
+        {/* Subtle dot grid */}
+        <div
+          className="absolute inset-0 opacity-[0.028]"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(56,189,248,1) 1px, transparent 1px)`,
+            backgroundSize: "56px 56px",
+          }}
+        />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">Data Pipeline Architecture</h2>
-            <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">End-to-end data engineering from raw sources to business-ready dashboards</p>
-          </div>
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 relative z-10">
+          {/* Header */}
+          <motion.div
+            className="text-center mb-20 lg:mb-24"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-sky-500/70 text-[10px] font-mono tracking-[0.25em] uppercase mb-4">System Design</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight mb-4">
+              Data Pipeline Architecture
+            </h2>
+            <p className="text-slate-500 text-sm max-w-xs mx-auto leading-relaxed">
+              End-to-end data engineering from raw sources to business-ready dashboards
+            </p>
+          </motion.div>
 
-          {/* Horizontal pipeline steps */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center gap-0">
-            {pipelineSteps.map((step, idx) => (
-              <div key={idx} className="flex flex-row sm:flex-col items-center sm:items-center w-full sm:w-auto">
-                {/* Card */}
+          {/* Timeline diagram */}
+          <div className="relative">
+            {/* Animated connector line — desktop only */}
+            <div className="hidden sm:block absolute top-6 left-[12.5%] right-[12.5%] h-px bg-slate-800">
+              <motion.div
+                className="absolute inset-y-0 left-0 bg-sky-500/40"
+                initial={{ width: "0%" }}
+                whileInView={{ width: "100%" }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.8, ease: "easeInOut", delay: 0.3 }}
+              />
+              {/* Travelling dot */}
+              <motion.div
+                className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_2px_rgba(56,189,248,0.7)]"
+                initial={{ left: "0%", opacity: 0 }}
+                whileInView={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+                viewport={{ once: true }}
+                transition={{ duration: 2.4, ease: "easeInOut", delay: 0.35 }}
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-10 sm:gap-0">
+              {pipelineStages.map((stage, idx) => (
                 <motion.div
-                  initial={{ opacity: 0, y: 16 }}
+                  key={idx}
+                  className="flex-1 flex flex-col items-center text-center sm:px-4"
+                  initial={{ opacity: 0, y: 22 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  className="flex sm:flex-col items-center sm:text-center gap-4 sm:gap-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl p-5 sm:p-6 w-full sm:w-44 transition-colors group"
+                  transition={{ duration: 0.45, delay: 0.4 + idx * 0.18 }}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary/30 transition-colors">
-                    <PipelineIcon name={step.icon} />
+                  {/* Node on the line */}
+                  <div className="relative z-10 w-12 h-12 rounded-full border border-sky-500/20 bg-[#070b16] flex items-center justify-center mb-6 group">
+                    <div className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_10px_2px_rgba(56,189,248,0.55)] group-hover:shadow-[0_0_18px_4px_rgba(56,189,248,0.75)] transition-shadow duration-300" />
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[9px] font-mono text-sky-600/60 tracking-widest whitespace-nowrap">
+                      0{idx + 1}
+                    </span>
                   </div>
-                  <div>
-                    <div className="font-bold text-white text-sm sm:text-base">{step.label}</div>
-                    <div className="text-slate-400 text-xs mt-1 leading-snug">{step.desc}</div>
-                  </div>
-                </motion.div>
 
-                {/* Arrow connector */}
-                {idx < pipelineSteps.length - 1 && (
-                  <div className="text-slate-600 text-xl sm:text-2xl font-bold px-3 sm:px-4 shrink-0 rotate-90 sm:rotate-0">
-                    →
+                  {/* Icon */}
+                  <div className="text-sky-400/60 mb-3.5">
+                    <StageIcon name={stage.icon || ""} />
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* Label */}
+                  <div className="text-white text-sm font-semibold mb-2 tracking-tight">
+                    {stage.label}
+                  </div>
+
+                  {/* Description */}
+                  <div className="text-slate-500 text-xs leading-relaxed max-w-[130px]">
+                    {stage.description}
+                  </div>
+
+                  {/* Mobile vertical connector */}
+                  {idx < pipelineStages.length - 1 && (
+                    <div className="sm:hidden mt-8 w-px h-8 bg-gradient-to-b from-sky-500/30 to-transparent" />
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

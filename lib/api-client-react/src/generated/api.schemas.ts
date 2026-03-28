@@ -154,6 +154,13 @@ export interface ShowcaseDesign {
   order?: number;
 }
 
+export interface PipelineStage {
+  label: string;
+  description?: string;
+  icon?: string;
+  order?: number;
+}
+
 export interface HeroSection {
   heading?: string;
   badgeText?: string;
@@ -163,6 +170,7 @@ export interface HeroSection {
   cta1Link?: string;
   cta2Text?: string;
   pipelineSteps?: PipelineStep[];
+  pipelineStages?: PipelineStage[];
   toolIcons?: ToolIcon[];
   showcaseDesigns?: ShowcaseDesign[];
   updatedAt?: string;
@@ -177,6 +185,7 @@ export interface HeroSectionInput {
   cta1Link?: string;
   cta2Text?: string;
   pipelineSteps?: PipelineStep[];
+  pipelineStages?: PipelineStage[];
   toolIcons?: ToolIcon[];
   showcaseDesigns?: ShowcaseDesign[];
 }

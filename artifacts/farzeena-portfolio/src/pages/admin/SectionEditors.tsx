@@ -5,7 +5,7 @@ import {
   useGetSiteSettings, useUpdateSiteSettings,
   useListContactSubmissions, useUpdateContactSubmission, useDeleteContactSubmission, useBulkDeleteContactSubmissions
 } from "@workspace/api-client-react";
-import type { HeroSectionInput, AboutSectionInput, SiteSettingsInput } from "@workspace/api-client-react";
+import type { HeroSectionInput, AboutSectionInput, SiteSettingsInput, PipelineStage } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Plus, Trash2, Mail, MailOpen, AlertCircle, Image } from "lucide-react";
 import { format } from "date-fns";
@@ -27,6 +27,7 @@ export function HeroEditor() {
     cta1Link: "",
     cta2Text: "",
     pipelineSteps: [],
+    pipelineStages: [],
     toolIcons: [],
     showcaseDesigns: [],
   });
@@ -39,6 +40,7 @@ export function HeroEditor() {
         cta1Link: existing.cta1Link || "",
         cta2Text: existing.cta2Text || "",
         pipelineSteps: existing.pipelineSteps || [],
+        pipelineStages: existing.pipelineStages || [],
         toolIcons: [],
         showcaseDesigns: existing.showcaseDesigns || [],
       });
@@ -102,6 +104,64 @@ export function HeroEditor() {
             ))}
             {(!formData.pipelineSteps || formData.pipelineSteps.length === 0) && (
               <p className="text-slate-400 text-sm italic py-2">No headlines yet — add some above, or built-in defaults will be used.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Pipeline Stages */}
+        <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-5">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-base text-navy">Pipeline Stages</h3>
+              <p className="text-xs text-slate-400 mt-0.5">The four stages shown in the dark "Data Pipeline Architecture" section. Leave empty to use built-in defaults.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, pipelineStages: [...(p.pipelineStages||[]), { label: '', description: '', icon: 'Database', order: (p.pipelineStages?.length||0) }] }))}
+              className="px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-lg font-semibold flex items-center gap-1 shrink-0"
+            >
+              <Plus className="w-4 h-4" /> Add Stage
+            </button>
+          </div>
+          <div className="space-y-3">
+            {formData.pipelineStages?.map((stage, idx) => (
+              <div key={idx} className="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-wide flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-600 text-[9px] font-mono flex items-center justify-center">0{idx+1}</span>
+                    Stage {idx + 1}
+                  </span>
+                  <button type="button" onClick={() => setFormData(p => ({ ...p, pipelineStages: p.pipelineStages?.filter((_, i) => i !== idx) }))} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-slate-600">Title *</label>
+                    <input type="text" value={stage.label} onChange={e => { const d=[...(formData.pipelineStages||[])] as PipelineStage[]; d[idx]={...d[idx],label:e.target.value}; setFormData(p=>({...p,pipelineStages:d})); }} placeholder="Data Sources" className="w-full px-3 py-2 border rounded-lg text-sm mt-1 focus:ring-2 focus:ring-primary/20" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-slate-600">Icon</label>
+                    <select value={stage.icon||'Database'} onChange={e => { const d=[...(formData.pipelineStages||[])] as PipelineStage[]; d[idx]={...d[idx],icon:e.target.value}; setFormData(p=>({...p,pipelineStages:d})); }} className="w-full px-3 py-2 border rounded-lg text-sm mt-1 focus:ring-2 focus:ring-primary/20 bg-white">
+                      <option value="Database">Database</option>
+                      <option value="GitBranch">ETL / Transform</option>
+                      <option value="Server">Server / Warehouse</option>
+                      <option value="BarChart3">Dashboard / BI</option>
+                      <option value="LineChart">Line Chart</option>
+                      <option value="Layers">Layers</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-600">One-line description</label>
+                  <input type="text" value={stage.description||''} onChange={e => { const d=[...(formData.pipelineStages||[])] as PipelineStage[]; d[idx]={...d[idx],description:e.target.value}; setFormData(p=>({...p,pipelineStages:d})); }} placeholder="APIs, CSVs, event streams & operational databases ingested at source." className="w-full px-3 py-2 border rounded-lg text-sm mt-1 focus:ring-2 focus:ring-primary/20" />
+                </div>
+              </div>
+            ))}
+            {(!formData.pipelineStages || formData.pipelineStages.length === 0) && (
+              <div className="text-center py-5 border-2 border-dashed border-slate-200 rounded-xl">
+                <p className="text-slate-400 text-sm">No custom stages — built-in defaults will be used.</p>
+              </div>
             )}
           </div>
         </div>
