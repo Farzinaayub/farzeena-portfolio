@@ -44,6 +44,18 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   ];
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
+    // "Home" → always scroll to very top
+    if (href === "/") {
+      e.preventDefault();
+      setMobileMenuOpen(false);
+      if (location === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        navigate("/");
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
+      }
+      return;
+    }
     if (!href.startsWith("/#")) return;
     e.preventDefault();
     const sectionId = href.slice(2);

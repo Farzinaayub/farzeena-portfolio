@@ -38,31 +38,40 @@ export default function Home() {
   const { data: about } = useGetAboutSection();
   const { data: settings } = useGetSiteSettings();
 
-  // Carousel headlines — sourced from pipelineSteps.label if admin has set them
+  // Typewriter effect — cycles through headlines
   const headlines = hero?.pipelineSteps?.length
     ? hero.pipelineSteps.map(s => s.label).filter(Boolean)
     : DEFAULT_HEADLINES;
 
-  const [headlineIdx, setHeadlineIdx] = useState(0);
-  const [slide, setSlide] = useState<"idle" | "out" | "in">("idle");
+  const [displayed, setDisplayed] = useState("");
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  const [typing, setTyping] = useState(true);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSlide("out");
-      setTimeout(() => {
-        setHeadlineIdx(i => (i + 1) % headlines.length);
-        setSlide("in");
-        setTimeout(() => setSlide("idle"), 400);
-      }, 380);
-    }, 3400);
-    return () => clearInterval(timer);
-  }, [headlines.length]);
+    const current = headlines[phraseIdx] ?? "";
 
-  const headlineStyle: React.CSSProperties = {
-    opacity: slide === "out" ? 0 : 1,
-    transform: slide === "out" ? "translateY(-20px)" : slide === "in" ? "translateY(8px)" : "translateY(0)",
-    transition: slide === "idle" ? "none" : "opacity 0.38s ease, transform 0.38s ease",
-  };
+    if (paused) {
+      const t = setTimeout(() => { setTyping(false); setPaused(false); }, 2200);
+      return () => clearTimeout(t);
+    }
+    if (typing) {
+      if (displayed.length < current.length) {
+        const t = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 42);
+        return () => clearTimeout(t);
+      } else {
+        setPaused(true);
+      }
+    } else {
+      if (displayed.length > 0) {
+        const t = setTimeout(() => setDisplayed(d => d.slice(0, -1)), 22);
+        return () => clearTimeout(t);
+      } else {
+        setPhraseIdx(i => (i + 1) % headlines.length);
+        setTyping(true);
+      }
+    }
+  }, [displayed, typing, paused, phraseIdx, headlines]);
 
   const pipelineSteps = PIPELINE_DEFAULTS;
 
@@ -93,31 +102,12 @@ export default function Home() {
               Hi, I'm Farzeena — I help data teams
             </p>
 
-            {/* Carousel headline */}
-            <div className="min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center mb-6">
-              <h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] tracking-tight"
-                style={headlineStyle}
-              >
-                {headlines[headlineIdx]}
+            {/* Typewriter headline */}
+            <div className="min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center mb-10">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.1] tracking-tight">
+                {displayed}
+                <span className="inline-block w-[3px] h-[1em] ml-1 bg-primary align-middle animate-pulse rounded-sm" />
               </h1>
-            </div>
-
-            {/* Progress dots */}
-            <div className="flex items-center justify-center gap-2 mb-10">
-              {headlines.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setSlide("out"); setTimeout(() => { setHeadlineIdx(i); setSlide("in"); setTimeout(() => setSlide("idle"), 400); }, 380); }}
-                  className="transition-all duration-300 rounded-full"
-                  style={{
-                    width: i === headlineIdx ? "28px" : "8px",
-                    height: "8px",
-                    background: i === headlineIdx ? "var(--color-primary, #6366f1)" : "#cbd5e1",
-                  }}
-                  aria-label={`Go to headline ${i + 1}`}
-                />
-              ))}
             </div>
 
             {/* Subtitle */}
@@ -133,33 +123,13 @@ export default function Home() {
               >
                 {hero?.cta1Text || "View Case Studies"} <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
-                href="/#about"
+              <button
+                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-8 py-4 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 shadow-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all text-base"
               >
                 About Me
-              </Link>
+              </button>
             </div>
-          </motion.div>
-
-          {/* Stats row */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.3 }}
-            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6"
-          >
-            {[
-              { value: "4+", label: "Years Experience" },
-              { value: "15+", label: "Projects Delivered" },
-              { value: "10+", label: "Tools Mastered" },
-              { value: "5+", label: "Industries Served" },
-            ].map((stat, i) => (
-              <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-100 shadow-sm text-center hover:shadow-md transition-shadow">
-                <div className="text-3xl font-extrabold text-primary mb-1">{stat.value}</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{stat.label}</div>
-              </div>
-            ))}
           </motion.div>
         </div>
       </section>
