@@ -9,7 +9,7 @@ export function getGoogleDriveImageUrl(shareUrl: string | undefined): string {
   if (!shareUrl) return '';
   const match = shareUrl.match(/\/d\/([\w-]+)/);
   if (!match) return shareUrl;
-  return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return `https://lh3.googleusercontent.com/d/${match[1]}`;
 }
 
 export function generateSlug(title: string): string {

@@ -138,13 +138,10 @@ export default function Home() {
           <div className="flex overflow-x-auto hide-scrollbar gap-6 snap-x snap-mandatory pb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
             {caseStudies?.map((cs) => (
               <div key={cs._id} className="min-w-[280px] w-[280px] sm:min-w-[320px] bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col snap-start group overflow-hidden">
-                <div className="aspect-video w-full bg-slate-100 relative overflow-hidden">
-                  {cs.coverImageUrl ? (
-                    <img src={getGoogleDriveImageUrl(cs.coverImageUrl)} alt={cs.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-50 flex items-center justify-center">
-                      <BarChart3 className="w-12 h-12 text-primary/20" />
-                    </div>
+                <div className="aspect-video w-full bg-gradient-to-br from-blue-100 to-indigo-50 relative overflow-hidden flex items-center justify-center">
+                  <BarChart3 className="w-12 h-12 text-primary/20" />
+                  {cs.coverImageUrl && (
+                    <img src={getGoogleDriveImageUrl(cs.coverImageUrl)} alt={cs.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   )}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
@@ -187,13 +184,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogs?.slice(0,3).map((blog) => (
               <Link key={blog._id} href={`/blogs/${blog.slug}`} className="group flex flex-col">
-                <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-slate-100 relative">
-                  {blog.coverImageUrl ? (
-                    <img src={getGoogleDriveImageUrl(blog.coverImageUrl)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-                      <FileText className="w-12 h-12 text-slate-400" />
-                    </div>
+                <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-slate-200 relative flex items-center justify-center">
+                  <FileText className="w-12 h-12 text-slate-400" />
+                  {blog.coverImageUrl && (
+                    <img src={getGoogleDriveImageUrl(blog.coverImageUrl)} alt={blog.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   )}
                   <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-bold text-slate-700">
                     {blog.readingTime || 5} min read

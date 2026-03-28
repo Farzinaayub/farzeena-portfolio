@@ -24,13 +24,10 @@ export default function CaseStudies() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {caseStudies?.map((cs) => (
                <Link key={cs._id} href={`/case-studies/${cs.slug}`} className="bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group overflow-hidden">
-                <div className="aspect-video w-full bg-slate-100 relative overflow-hidden">
-                  {cs.coverImageUrl ? (
-                    <img src={getGoogleDriveImageUrl(cs.coverImageUrl)} alt={cs.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-50 flex items-center justify-center">
-                      <BarChart3 className="w-12 h-12 text-primary/20" />
-                    </div>
+                <div className="aspect-video w-full bg-gradient-to-br from-blue-100 to-indigo-50 relative overflow-hidden flex items-center justify-center">
+                  <BarChart3 className="w-12 h-12 text-primary/20" />
+                  {cs.coverImageUrl && (
+                    <img src={getGoogleDriveImageUrl(cs.coverImageUrl)} alt={cs.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   )}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
