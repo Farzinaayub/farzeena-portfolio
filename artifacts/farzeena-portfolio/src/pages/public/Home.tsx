@@ -31,6 +31,77 @@ function PipelineIcon({ name }: { name: string }) {
   return <Layers className="w-6 h-6" />;
 }
 
+function HeroVisualization() {
+  const data = [38, 52, 44, 68, 57, 75, 82, 91];
+  const W = 280, H = 148;
+  const pad = { t: 8, r: 8, b: 22, l: 8 };
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+  const max = Math.max(...data);
+  const pts = data.map((d, i) => ({
+    x: pad.l + (i / (data.length - 1)) * cW,
+    y: pad.t + cH - (d / max) * cH,
+  }));
+  const lineD = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+  const areaD = `${lineD} L${pts[pts.length - 1].x},${H - pad.b} L${pts[0].x},${H - pad.b} Z`;
+
+  return (
+    <div className="relative w-full max-w-[300px]">
+      <div className="flex gap-2 mb-3">
+        <div className="flex-1 bg-white border border-slate-200/80 rounded-xl px-3 py-2.5 shadow-sm">
+          <p className="text-[9px] text-slate-400 font-medium uppercase tracking-wide leading-none mb-1.5">Data Quality</p>
+          <p className="text-base font-bold text-slate-800">99.2%</p>
+        </div>
+        <div className="flex-1 bg-white border border-slate-200/80 rounded-xl px-3 py-2.5 shadow-sm">
+          <p className="text-[9px] text-slate-400 font-medium uppercase tracking-wide leading-none mb-1.5">Pipeline Uptime</p>
+          <p className="text-base font-bold text-primary">98.7%</p>
+        </div>
+        <div className="flex-1 bg-white border border-slate-200/80 rounded-xl px-3 py-2.5 shadow-sm">
+          <p className="text-[9px] text-slate-400 font-medium uppercase tracking-wide leading-none mb-1.5">Rows / mo</p>
+          <p className="text-base font-bold text-slate-800">1.2M</p>
+        </div>
+      </div>
+
+      <div className="bg-white/70 backdrop-blur-sm border border-slate-200/80 rounded-2xl px-4 pt-3.5 pb-2 shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[10px] text-slate-500 font-medium tracking-wide">Pipeline Throughput</p>
+          <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">↑ 23%</span>
+        </div>
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="text-primary overflow-visible">
+          <defs>
+            <linearGradient id="heroAreaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="currentColor" stopOpacity="0.01" />
+            </linearGradient>
+          </defs>
+          {[0.33, 0.66, 1].map((r, i) => (
+            <line key={i}
+              x1={pad.l} y1={pad.t + cH * (1 - r)}
+              x2={W - pad.r} y2={pad.t + cH * (1 - r)}
+              stroke="#e2e8f0" strokeWidth="1" strokeDasharray="3 5"
+            />
+          ))}
+          <path d={areaD} fill="url(#heroAreaGrad)" />
+          <path d={lineD} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          {pts.slice(0, -1).map((p, i) => (
+            <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="currentColor" opacity="0.3" />
+          ))}
+          <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="5.5" fill="white" stroke="currentColor" strokeWidth="2" />
+          <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="2.5" fill="currentColor" />
+          {["Q1", "Q2", "Q3", "Q4"].map((label, i) => (
+            <text key={label}
+              x={pad.l + ((i * 2 + 1) / (data.length - 1)) * cW}
+              y={H - 4}
+              textAnchor="middle" fontSize="8" fill="#94a3b8"
+              fontFamily="system-ui,sans-serif"
+            >{label}</text>
+          ))}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { data: hero } = useGetHeroSection();
   const { data: caseStudies } = useListCaseStudies({ status: "published", featured: true });
@@ -55,90 +126,69 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen relative">
-      {/* 1. HERO — Carousel */}
-      <section className="relative pb-12 lg:pt-24 lg:pb-20 overflow-hidden pt-[20px]">
-        {/* Subtle radial accent */}
-        <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-          <div className="w-[600px] h-[400px] rounded-full bg-primary/5 blur-3xl" />
+      {/* 1. HERO — 2-column: text left, visualization right */}
+      <section className="relative pt-10 pb-14 lg:pt-20 lg:pb-24 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[600px] h-[420px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        {/* ASCII art — analytics-themed, visible on lg+ */}
-        <div className="pointer-events-none select-none hidden lg:block">
-          {/* Left: pipeline run log */}
-          <pre className="absolute left-6 top-1/2 -translate-y-1/2 font-mono text-[10.5px] leading-[1.65] text-primary opacity-[0.13] whitespace-pre">
-{`pipeline.run
-─────────────────
-● ingest    ✓ ok
-● validate  ✓ ok
-● transform ✓ ok
-● load      ✓ ok
-● publish   ✓ ok
-─────────────────
-rows   1,247,832
-score     99.2 %
-elapsed  0:03:42`}
-          </pre>
-          {/* Right: SQL fragment */}
-          <pre className="absolute right-6 top-1/2 -translate-y-1/2 font-mono text-[10.5px] leading-[1.65] text-primary opacity-[0.13] whitespace-pre text-left">
-{`SELECT
-  category,
-  SUM(revenue),
-  AVG(leakage)
-FROM metrics
-WHERE
-  quarter = 'Q4'
-  AND leakage > 0
-GROUP BY category
-ORDER BY leakage
-──────────────────
-1,247 rows · 0.3s`}
-          </pre>
-        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55 }}
-          >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-5 border border-primary/15">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              {hero?.badgeText || "Analytics Engineer · Data & Business Intelligence"}
-            </div>
+            {/* LEFT: text content */}
+            <motion.div
+              className="flex-1 min-w-0 text-center lg:text-left"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-5 border border-primary/15">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                {hero?.badgeText || "Analytics Engineer · Data & Business Intelligence"}
+              </div>
 
-            {/* Vertical sliding headline carousel */}
-            <div className="relative h-[148px] sm:h-[136px] lg:h-[148px] flex items-center justify-center mb-8 overflow-hidden">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.h1
-                  key={slideIdx}
-                  initial={{ y: 44, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -44, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute w-full text-center text-xl sm:text-2xl lg:text-4xl text-navy tracking-tight font-medium leading-snug px-2"
+              <div className="relative h-[148px] sm:h-[136px] lg:h-[120px] flex items-center justify-center lg:justify-start mb-8 overflow-hidden">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.h1
+                    key={slideIdx}
+                    initial={{ y: 44, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -44, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute w-full text-center lg:text-left text-xl sm:text-2xl lg:text-4xl text-navy tracking-tight font-medium leading-snug px-2 lg:px-0"
+                  >
+                    {headlines[slideIdx]}
+                  </motion.h1>
+                </AnimatePresence>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start justify-center gap-3">
+                <Link
+                  href={hero?.cta1Link || "/case-studies"}
+                  className="px-6 py-2.5 rounded-lg bg-primary text-white font-medium border border-primary hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm tracking-wide"
                 >
-                  {headlines[slideIdx]}
-                </motion.h1>
-              </AnimatePresence>
-            </div>
+                  {hero?.cta1Text || "View Case Studies"} <ArrowRight className="w-4 h-4" />
+                </Link>
+                <button
+                  onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+                  className="px-6 py-2.5 rounded-lg text-slate-700 font-medium border border-slate-300 hover:border-navy hover:text-navy transition-colors text-sm tracking-wide"
+                >
+                  {hero?.cta2Text || "About Me"}
+                </button>
+              </div>
+            </motion.div>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                href={hero?.cta1Link || "/case-studies"}
-                className="px-6 py-2.5 rounded-lg bg-primary text-white font-medium border border-primary hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm tracking-wide"
-              >
-                {hero?.cta1Text || "View Case Studies"} <ArrowRight className="w-4 h-4" />
-              </Link>
-              <button
-                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-6 py-2.5 rounded-lg text-slate-700 font-medium border border-slate-300 hover:border-navy hover:text-navy transition-colors text-sm tracking-wide"
-              >
-                {hero?.cta2Text || "About Me"}
-              </button>
-            </div>
-          </motion.div>
+            {/* RIGHT: minimalist data visualization */}
+            <motion.div
+              className="hidden lg:flex flex-shrink-0 w-[300px] xl:w-[320px] items-center justify-center"
+              initial={{ opacity: 0, x: 28 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.65, delay: 0.25 }}
+            >
+              <HeroVisualization />
+            </motion.div>
+
+          </div>
         </div>
       </section>
       {/* 2. DATA PIPELINE ARCHITECTURE SECTION */}
