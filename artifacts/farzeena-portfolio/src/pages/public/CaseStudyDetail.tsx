@@ -49,11 +49,11 @@ export default function CaseStudyDetail() {
 
       {/* Cover Image */}
       {cs.coverImageUrl && (
-        <div className="w-full mb-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 mb-16">
           <img 
             src={getGoogleDriveImageUrl(cs.coverImageUrl)} 
             alt={cs.title} 
-            className="w-full h-[55vh] object-cover object-top bg-slate-100" 
+            className="w-full aspect-[21/9] object-cover object-top rounded-2xl shadow-xl border-4 border-white bg-slate-100" 
             onError={(e) => { e.currentTarget.parentElement!.style.display = 'none'; }}
           />
         </div>
