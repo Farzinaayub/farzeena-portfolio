@@ -75,7 +75,7 @@ export default function Home() {
             </div>
 
             {/* Vertical sliding headline carousel */}
-            <div className="min-h-[52px] sm:min-h-[64px] lg:min-h-[80px] flex items-center justify-center mb-8 overflow-hidden">
+            <div className="h-[100px] sm:h-[120px] lg:h-[144px] flex items-center justify-center mb-8 overflow-hidden">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.h1
                   key={slideIdx}
