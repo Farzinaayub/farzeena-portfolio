@@ -42,7 +42,7 @@ export default function BlogDetail() {
           <img 
             src={getGoogleDriveImageUrl(blog.coverImageUrl)} 
             alt={blog.title} 
-            className="w-full aspect-[2/1] object-cover object-top rounded-3xl bg-slate-100 border shadow-sm" 
+            className="w-full aspect-[2/1] object-cover object-top rounded-3xl bg-slate-100 border border-slate-200" 
             onError={(e) => { e.currentTarget.parentElement!.style.display = 'none'; }}
           />
         </div>

@@ -53,7 +53,7 @@ export default function CaseStudyDetail() {
           <img 
             src={getGoogleDriveImageUrl(cs.coverImageUrl)} 
             alt={cs.title} 
-            className="w-full aspect-[21/9] object-cover object-top rounded-2xl shadow-xl border-4 border-white bg-slate-100" 
+            className="w-full aspect-[21/9] object-cover object-top rounded-2xl border border-slate-200 bg-slate-100" 
             onError={(e) => { e.currentTarget.parentElement!.style.display = 'none'; }}
           />
         </div>
