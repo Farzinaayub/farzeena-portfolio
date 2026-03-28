@@ -62,8 +62,8 @@ export default function Home() {
           <div className="w-[600px] h-[400px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        {/* ASCII art — analytics-themed, only on xl+ where there's space beside the centered content */}
-        <div className="pointer-events-none select-none hidden xl:block">
+        {/* ASCII art — analytics-themed, visible on lg+ */}
+        <div className="pointer-events-none select-none hidden lg:block">
           {/* Left: pipeline run log */}
           <pre className="absolute left-6 top-1/2 -translate-y-1/2 font-mono text-[10.5px] leading-[1.65] text-primary opacity-[0.13] whitespace-pre">
 {`pipeline.run
