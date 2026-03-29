@@ -1,0 +1,96 @@
+2026-03-29T06:52:42.322Z	Initializing build environment...
+2026-03-29T06:52:42.322Z	Initializing build environment...
+2026-03-29T06:52:43.976Z	Success: Finished initializing build environment
+2026-03-29T06:52:44.688Z	Cloning repository...
+2026-03-29T06:52:46.461Z	Restoring from dependencies cache
+2026-03-29T06:52:46.464Z	Restoring from build output cache
+2026-03-29T06:52:47.519Z	Detected the following tools from environment: nodejs@20.20.2, pnpm@10.11.1
+2026-03-29T06:52:47.520Z	Installing nodejs 20.20.2
+2026-03-29T06:52:57.480Z	Installing project dependencies: pnpm install --frozen-lockfile
+2026-03-29T06:52:58.213Z	Scope: all 9 workspace projects
+2026-03-29T06:52:58.376Z	Lockfile is up to date, resolution step is skipped
+2026-03-29T06:52:58.506Z	Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-03-29T06:52:58.632Z	Packages: +594
+2026-03-29T06:52:58.634Z	++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-03-29T06:52:59.504Z	Progress: resolved 594, reused 0, downloaded 1, added 0
+2026-03-29T06:53:00.505Z	Progress: resolved 594, reused 0, downloaded 2, added 0
+2026-03-29T06:53:01.506Z	Progress: resolved 594, reused 0, downloaded 7, added 2
+2026-03-29T06:53:02.506Z	Progress: resolved 594, reused 0, downloaded 19, added 5
+2026-03-29T06:53:03.507Z	Progress: resolved 594, reused 0, downloaded 27, added 6
+2026-03-29T06:53:04.509Z	Progress: resolved 594, reused 0, downloaded 29, added 6
+2026-03-29T06:53:05.510Z	Progress: resolved 594, reused 0, downloaded 31, added 6
+2026-03-29T06:53:06.520Z	Progress: resolved 594, reused 0, downloaded 56, added 17
+2026-03-29T06:53:07.521Z	Progress: resolved 594, reused 0, downloaded 156, added 57
+2026-03-29T06:53:08.523Z	Progress: resolved 594, reused 0, downloaded 313, added 147
+2026-03-29T06:53:09.524Z	Progress: resolved 594, reused 0, downloaded 382, added 172
+2026-03-29T06:53:10.524Z	Progress: resolved 594, reused 0, downloaded 393, added 176
+2026-03-29T06:53:11.525Z	Progress: resolved 594, reused 0, downloaded 396, added 176
+2026-03-29T06:53:12.526Z	Progress: resolved 594, reused 0, downloaded 397, added 176
+2026-03-29T06:53:13.526Z	Progress: resolved 594, reused 0, downloaded 417, added 184
+2026-03-29T06:53:14.527Z	Progress: resolved 594, reused 0, downloaded 495, added 212
+2026-03-29T06:53:15.529Z	Progress: resolved 594, reused 0, downloaded 594, added 358
+2026-03-29T06:53:16.445Z	Progress: resolved 594, reused 0, downloaded 594, added 594, done
+2026-03-29T06:53:16.854Z	.../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+2026-03-29T06:53:16.929Z	.../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+2026-03-29T06:53:17.320Z	
+2026-03-29T06:53:17.324Z	devDependencies:
+2026-03-29T06:53:17.325Z	+ prettier 3.8.1
+2026-03-29T06:53:17.325Z	+ typescript 5.9.3
+2026-03-29T06:53:17.325Z	
+2026-03-29T06:53:17.409Z	. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+2026-03-29T06:53:17.422Z	. preinstall: Done
+2026-03-29T06:53:17.643Z	Done in 19.9s using pnpm v10.11.1
+2026-03-29T06:53:17.810Z	Executing user build command: pnpm run build:pages
+2026-03-29T06:53:18.372Z	
+2026-03-29T06:53:18.372Z	> workspace@0.0.0 build:pages /opt/buildhome/repo
+2026-03-29T06:53:18.372Z	> NODE_ENV=production BASE_PATH=/ pnpm --filter @workspace/farzeena-portfolio run build
+2026-03-29T06:53:18.372Z	
+2026-03-29T06:53:18.815Z	
+2026-03-29T06:53:18.815Z	> @workspace/farzeena-portfolio@0.0.0 build /opt/buildhome/repo/artifacts/farzeena-portfolio
+2026-03-29T06:53:18.816Z	> vite build --config vite.config.ts
+2026-03-29T06:53:18.816Z	
+2026-03-29T06:53:19.397Z	vite v7.3.1 building client environment for production...
+2026-03-29T06:53:19.494Z	transforming...
+2026-03-29T06:53:20.872Z	src/components/ui/sonner.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+2026-03-29T06:53:20.890Z	src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+2026-03-29T06:53:27.718Z	✓ 2653 modules transformed.
+2026-03-29T06:53:28.564Z	rendering chunks...
+2026-03-29T06:53:28.585Z	computing gzip size...
+2026-03-29T06:53:28.617Z	dist/public/index.html                            0.74 kB │ gzip:   0.42 kB
+2026-03-29T06:53:28.617Z	dist/public/assets/analytics-logo-P7uTta4e.png  769.71 kB
+2026-03-29T06:53:28.617Z	dist/public/assets/index-CNI7nFB9.css           155.31 kB │ gzip:  23.87 kB
+2026-03-29T06:53:28.617Z	dist/public/assets/index-CX93JZzd.js            754.38 kB │ gzip: 226.05 kB
+2026-03-29T06:53:28.618Z	✓ built in 9.17s
+2026-03-29T06:53:28.618Z	
+2026-03-29T06:53:28.619Z	(!) Some chunks are larger than 500 kB after minification. Consider:
+2026-03-29T06:53:28.619Z	- Using dynamic import() to code-split the application
+2026-03-29T06:53:28.619Z	- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-03-29T06:53:28.619Z	- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-03-29T06:53:28.752Z	Success: Build command completed
+2026-03-29T06:53:28.875Z	Executing user deploy command: npx wrangler pages deploy artifacts/farzeena-portfolio/dist/public --project-name farzeena-portfolio
+2026-03-29T06:53:30.309Z	npm warn exec The following package was not found and will be installed: wrangler@4.78.0
+2026-03-29T06:53:40.478Z	
+2026-03-29T06:53:40.480Z	 ⛅️ wrangler 4.78.0
+2026-03-29T06:53:40.482Z	───────────────────
+2026-03-29T06:53:40.742Z	
+2026-03-29T06:53:40.792Z	✘ [ERROR] A request to the Cloudflare API (/accounts/8e4f223a3d5c6404ea88fbf2c2360ecc/pages/projects/farzeena-portfolio) failed.
+2026-03-29T06:53:40.793Z	
+2026-03-29T06:53:40.793Z	  Authentication error [code: 10000]
+2026-03-29T06:53:40.793Z	
+2026-03-29T06:53:40.794Z	
+2026-03-29T06:53:40.794Z	📎 It looks like you are authenticating Wrangler via a custom API token set in an environment variable.
+2026-03-29T06:53:40.794Z	Please ensure it has the correct permissions for this operation.
+2026-03-29T06:53:40.794Z	
+2026-03-29T06:53:40.799Z	Getting User settings...
+2026-03-29T06:53:41.130Z	👋 You are logged in with an User API Token, associated with the email farzinaayub266@gmail.com.
+2026-03-29T06:53:41.130Z	ℹ️  The API Token is read from the CLOUDFLARE_API_TOKEN environment variable.
+2026-03-29T06:53:41.135Z	┌────────────────────────────────────┬──────────────────────────────────┐
+2026-03-29T06:53:41.135Z	│ Account Name                       │ Account ID                       │
+2026-03-29T06:53:41.135Z	├────────────────────────────────────┼──────────────────────────────────┤
+2026-03-29T06:53:41.135Z	│ Farzinaayub266@gmail.com's Account │ 8e4f223a3d5c6404ea88fbf2c2360ecc │
+2026-03-29T06:53:41.135Z	└────────────────────────────────────┴──────────────────────────────────┘
+2026-03-29T06:53:41.136Z	🔓 To see token permissions visit https://dash.cloudflare.com/profile/api-tokens.
+2026-03-29T06:53:41.575Z	🎢 Membership roles in "Farzinaayub266@gmail.com's Account": Contact account super admin to change your permissions.
+2026-03-29T06:53:41.575Z	- Super Administrator - All Privileges
+2026-03-29T06:53:41.578Z	🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-03-29_06-53-39_660.log"
+2026-03-29T06:53:41.637Z	Failed: error occurred while running deploy command
